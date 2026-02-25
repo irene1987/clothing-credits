@@ -33,4 +33,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["sh", "-c", "node_modules/.bin/tsx prisma/seed.ts && node server.js"]
+CMD ["sh", "-c", "node_modules/.bin/tsx prisma/seed.ts 2>&1 | head -50 && node server.js"]
