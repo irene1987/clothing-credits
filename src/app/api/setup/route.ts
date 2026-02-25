@@ -17,3 +17,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: e.message }, { status: 500 })
   }
 }
+// force rebuild Mer 25 Feb 2026 11:18:23 CET
