@@ -131,3 +131,4 @@ Tutta l'interfaccia è in italiano. I testi sono nei file delle pagine.
 - **Auth:** NextAuth.js (JWT + bcrypt)
 - **UI:** Tailwind CSS
 - **Hosting:** Railway (gratis fino a $5/mese di risorse)
+
