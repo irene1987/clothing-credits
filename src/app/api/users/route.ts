@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Check duplicate card
-  const existing = await prisma.user.findUnique({ where: { cardNumber } })
+  const existing = await prisma.user.findFirst({ where: { cardNumber } })
   if (existing) {
     return NextResponse.json({ error: 'Numero tessera già esistente' }, { status: 409 })
   }
