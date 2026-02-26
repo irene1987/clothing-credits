@@ -33,4 +33,9 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["sh", "-c", "node_modules/.bin/prisma db push && node_modules/.bin/tsx prisma/import-users.ts && node_modules/.bin/tsx prisma/seed.ts && node server.js"]
+# QUESTO PER IMPORTARE GLI UTENTI AD OGNI DEPLOY
+# CMD ["sh", "-c", "node_modules/.bin/prisma db push && node_modules/.bin/tsx prisma/import-users.ts && node_modules/.bin/tsx prisma/seed.ts && node server.js"]
+
+
+# QUESTO PER IL DEPLOY NORMALE
+CMD ["sh", "-c", "node_modules/.bin/tsx prisma/seed.ts && node server.js"]
