@@ -1,19 +1,15 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, RefreshCw } from 'lucide-react'
-
-function randomCard() {
-  return `CC-${Math.floor(100000 + Math.random() * 900000)}`
-}
+import { ArrowLeft } from 'lucide-react'
 
 export default function NewUserPage() {
   const router = useRouter()
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
-    cardNumber: randomCard(),
+    cardNumber: '',
     phone: '',
     email: '',
     credits: 0,
@@ -21,6 +17,15 @@ export default function NewUserPage() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    fetch('/api/users/next-card')
+      .then(r => r.json())
+      .then(data => {
+        if (data.nextCard) setForm(f => ({ ...f, cardNumber: data.nextCard }))
+      })
+      .catch(() => {})
+  }, [])
 
   const set = (key: string, val: string | number) => setForm(f => ({ ...f, [key]: val }))
 
@@ -73,22 +78,12 @@ export default function NewUserPage() {
 
         <div>
           <label className="label">Numero tessera *</label>
-          <div className="flex gap-2">
-            <input
-              className="input font-mono"
-              required
-              value={form.cardNumber}
-              onChange={e => set('cardNumber', e.target.value)}
-            />
-            <button
-              type="button"
-              className="btn-secondary px-3"
-              onClick={() => set('cardNumber', randomCard())}
-              title="Genera nuovo numero"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
-          </div>
+          <input
+            className="input font-mono"
+            required
+            value={form.cardNumber}
+            onChange={e => set('cardNumber', e.target.value)}
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
