@@ -18,6 +18,7 @@ async function main() {
   console.log(`📂 Trovati ${records.length} record nel CSV`)
 
   let created = 0
+  let updated = 0
   let skipped = 0
 
   for (const row of records) {
@@ -36,26 +37,28 @@ async function main() {
       const age = ageRaw ? parseInt(ageRaw) || null : null
       const tags = row['Tags']?.trim() || null
 
-      await prisma.user.create({
-        data: {
-          cardNumber,
-          firstName,
-          lastName,
-          gender,
-          age,
-          tags,
-          isActive: true,
-          credits: 0,
-        },
-      })
-      created++
+      const existing = await prisma.user.findFirst({ where: { cardNumber } })
+
+      if (existing) {
+        await prisma.user.update({
+          where: { id: existing.id },
+          data: { firstName, lastName, gender, age, tags },
+        })
+        updated++
+      } else {
+        await prisma.user.create({
+          data: { cardNumber, firstName, lastName, gender, age, tags, isActive: true, credits: 0 },
+        })
+        created++
+      }
     } catch (e: any) {
       console.error(`❌ Errore su ${cardNumber} ${firstName} ${lastName}: ${e.message}`)
       skipped++
     }
   }
 
-  console.log(`✅ Importati: ${created}`)
+  console.log(`✅ Creati: ${created}`)
+  console.log(`🔄 Aggiornati: ${updated}`)
   console.log(`⚠️  Saltati: ${skipped}`)
 }
 
