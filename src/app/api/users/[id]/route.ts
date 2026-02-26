@@ -17,12 +17,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
-  const { firstName, lastName, cardNumber, birthYear, email, notes, isActive } = body
+  const { firstName, lastName, cardNumber, birthYear, gender, age, tags, email, notes, isActive } = body
 
   try {
     const user = await prisma.user.update({
       where: { id: params.id },
-      data: { firstName, lastName, cardNumber, birthYear: birthYear ? parseInt(birthYear) : null, email, notes, isActive },
+      data: { firstName, lastName, cardNumber, birthYear: birthYear ? parseInt(birthYear) : null, gender: gender || null, age: birthYear ? new Date().getFullYear() - parseInt(birthYear) : (age ? parseInt(age) : null), tags: tags || null, email, notes, isActive },
     })
     return NextResponse.json(user)
   } catch (e: any) {

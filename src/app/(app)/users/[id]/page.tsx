@@ -47,6 +47,9 @@ export default async function UserDetailPage({ params }: { params: { id: string 
                   : <span className="badge-slate">Disabilitato</span>
                 }
                 {user.birthYear && <span className="text-sm text-slate-500">Nato/a nel {user.birthYear}</span>}
+                {user.gender && <span className="text-sm text-slate-500">{user.gender}</span>}
+                {user.age && <span className="text-sm text-slate-500">{user.age} anni</span>}
+                {user.tags && <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{user.tags}</span>}
               </div>
             </div>
           </div>

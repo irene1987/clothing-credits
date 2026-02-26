@@ -97,6 +97,15 @@ export default async function UsersPage({
                 Tessera
               </th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Genere
+              </th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Età
+              </th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Tags
+              </th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Crediti
               </th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -130,6 +139,9 @@ export default async function UsersPage({
                     </div>
                   </td>
                   <td className="px-6 py-4 font-mono text-slate-600 text-xs">{user.cardNumber}</td>
+                  <td className="px-6 py-4 text-slate-600 text-sm">{user.gender || '—'}</td>
+                  <td className="px-6 py-4 text-slate-600 text-sm">{user.age ?? '—'}</td>
+                  <td className="px-6 py-4 text-slate-500 text-xs">{user.tags || '—'}</td>
                   <td className="px-6 py-4">
                     <span className={`font-bold text-base ${user.credits > 0 ? 'text-brand-600' : 'text-slate-400'}`}>
                       {user.credits}

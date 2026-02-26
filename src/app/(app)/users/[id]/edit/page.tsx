@@ -11,6 +11,9 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     lastName: '',
     cardNumber: '',
     birthYear: '',
+    gender: '',
+    age: '',
+    tags: '',
     email: '',
     notes: '',
     isActive: true,
@@ -28,6 +31,9 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           lastName: data.lastName,
           cardNumber: data.cardNumber,
           birthYear: data.birthYear ? String(data.birthYear) : '',
+          gender: data.gender || '',
+          age: data.age ? String(data.age) : '',
+          tags: data.tags || '',
           email: data.email || '',
           notes: data.notes || '',
           isActive: data.isActive,
@@ -85,9 +91,29 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           <input className="input font-mono" required value={form.cardNumber} onChange={e => set('cardNumber', e.target.value)} />
         </div>
 
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="label">Anno di nascita</label>
+            <input className="input" type="number" min={1900} max={new Date().getFullYear()} value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
+          </div>
+          <div>
+            <label className="label">Genere</label>
+            <select className="input" value={form.gender} onChange={e => set('gender', e.target.value)}>
+              <option value="">—</option>
+              <option value="M">M</option>
+              <option value="F">F</option>
+              <option value="NB">Non-binary</option>
+            </select>
+          </div>
+          <div>
+            <label className="label">Età</label>
+            <input className="input" type="number" min={0} max={120} value={form.age} onChange={e => set('age', e.target.value)} />
+          </div>
+        </div>
+
         <div>
-          <label className="label">Anno di nascita</label>
-          <input className="input" type="number" min={1900} max={new Date().getFullYear()} value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
+          <label className="label">Tags</label>
+          <input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} />
         </div>
 
         <div>

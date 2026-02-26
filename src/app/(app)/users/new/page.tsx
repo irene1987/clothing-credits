@@ -11,6 +11,9 @@ export default function NewUserPage() {
     lastName: '',
     cardNumber: '',
     birthYear: '',
+    gender: '',
+    age: '',
+    tags: '',
     email: '',
     credits: 0,
     notes: '',
@@ -86,10 +89,30 @@ export default function NewUserPage() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="label">Anno di nascita</label>
             <input className="input" type="number" min={1900} max={new Date().getFullYear()} value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
+          </div>
+          <div>
+            <label className="label">Genere</label>
+            <select className="input" value={form.gender} onChange={e => set('gender', e.target.value)}>
+              <option value="">—</option>
+              <option value="M">M</option>
+              <option value="F">F</option>
+              <option value="NB">Non-binary</option>
+            </select>
+          </div>
+          <div>
+            <label className="label">Età</label>
+            <input className="input" type="number" min={0} max={120} value={form.age} onChange={e => set('age', e.target.value)} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="label">Tags</label>
+            <input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} />
           </div>
           <div>
             <label className="label">Crediti iniziali</label>

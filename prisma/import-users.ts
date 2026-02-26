@@ -31,11 +31,19 @@ async function main() {
     }
 
     try {
+      const gender = row['Gender']?.trim() || null
+      const ageRaw = row['Age']?.trim()
+      const age = ageRaw ? parseInt(ageRaw) || null : null
+      const tags = row['Tags']?.trim() || null
+
       await prisma.user.create({
         data: {
           cardNumber,
           firstName,
           lastName,
+          gender,
+          age,
+          tags,
           isActive: true,
           credits: 0,
         },
