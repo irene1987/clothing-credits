@@ -3,26 +3,59 @@ import Link from 'next/link'
 import { UserPlus, Search } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 
+const PAGE_SIZE = 20
+
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: { q?: string }
+  searchParams: { q?: string; page?: string }
 }) {
   const q = searchParams.q?.trim() || ''
+  const page = Math.max(1, parseInt(searchParams.page || '1', 10))
 
-  const users = await prisma.user.findMany({
-    where: q
-      ? {
-          OR: [
-            { firstName: { contains: q, mode: 'insensitive' } },
-            { lastName: { contains: q, mode: 'insensitive' } },
-            { cardNumber: { contains: q, mode: 'insensitive' } },
-          ],
-        }
-      : {},
-    orderBy: { lastName: 'asc' },
-    take: 50,
-  })
+  const where = q
+    ? {
+        OR: [
+          { firstName: { contains: q, mode: 'insensitive' as const } },
+          { lastName: { contains: q, mode: 'insensitive' as const } },
+          { cardNumber: { contains: q, mode: 'insensitive' as const } },
+        ],
+      }
+    : {}
+
+  const [users, totalCount] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      orderBy: { cardNumber: 'desc' },
+      take: PAGE_SIZE,
+      skip: (page - 1) * PAGE_SIZE,
+    }),
+    prisma.user.count({ where }),
+  ])
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
+
+  function pageUrl(p: number) {
+    const params = new URLSearchParams()
+    if (q) params.set('q', q)
+    if (p > 1) params.set('page', String(p))
+    const qs = params.toString()
+    return `/users${qs ? `?${qs}` : ''}`
+  }
+
+  function getPageNumbers(): (number | '...')[] {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
+    }
+    const pages: (number | '...')[] = [1]
+    if (page > 3) pages.push('...')
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) {
+      pages.push(i)
+    }
+    if (page < totalPages - 2) pages.push('...')
+    pages.push(totalPages)
+    return pages
+  }
 
   return (
     <div className="animate-in space-y-6">
@@ -32,7 +65,7 @@ export default async function UsersPage({
           <h1 className="text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
             Utenti
           </h1>
-          <p className="text-slate-500 mt-1">{users.length} utenti trovati</p>
+          <p className="text-slate-500 mt-1">{totalCount} utenti trovati</p>
         </div>
         <Link href="/users/new" className="btn-primary">
           <UserPlus className="w-4 h-4" />
@@ -122,6 +155,56 @@ export default async function UsersPage({
             )}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-surface-100">
+            <p className="text-sm text-slate-400">
+              Pagina {page} di {totalPages} · {totalCount} utenti
+            </p>
+            <div className="flex items-center gap-1">
+              <Link
+                href={pageUrl(page - 1)}
+                aria-disabled={page === 1}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  page === 1
+                    ? 'text-slate-300 pointer-events-none'
+                    : 'text-slate-600 hover:bg-surface-100'
+                }`}
+              >
+                ←
+              </Link>
+              {getPageNumbers().map((p, i) =>
+                p === '...' ? (
+                  <span key={`ellipsis-${i}`} className="px-2 text-slate-400 text-sm select-none">…</span>
+                ) : (
+                  <Link
+                    key={p}
+                    href={pageUrl(p)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                      p === page
+                        ? 'bg-brand-600 text-white'
+                        : 'text-slate-600 hover:bg-surface-100'
+                    }`}
+                  >
+                    {p}
+                  </Link>
+                )
+              )}
+              <Link
+                href={pageUrl(page + 1)}
+                aria-disabled={page === totalPages}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  page === totalPages
+                    ? 'text-slate-300 pointer-events-none'
+                    : 'text-slate-600 hover:bg-surface-100'
+                }`}
+              >
+                →
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
