@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
-  const { firstName, lastName, cardNumber, phone, email, notes, credits } = body
+  const { firstName, lastName, cardNumber, birthYear, email, notes, credits } = body
 
   if (!firstName || !lastName || !cardNumber) {
     return NextResponse.json({ error: 'Campi obbligatori mancanti' }, { status: 400 })
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   }
 
   const user = await prisma.user.create({
-    data: { firstName, lastName, cardNumber, phone, email, notes, credits: credits || 0 },
+    data: { firstName, lastName, cardNumber, birthYear: birthYear ? parseInt(birthYear) : null, email, notes, credits: credits || 0 },
   })
 
   return NextResponse.json(user, { status: 201 })

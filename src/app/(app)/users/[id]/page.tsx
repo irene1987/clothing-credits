@@ -46,7 +46,7 @@ export default async function UserDetailPage({ params }: { params: { id: string 
                   ? <span className="badge-green">Attivo</span>
                   : <span className="badge-slate">Disabilitato</span>
                 }
-                {user.phone && <span className="text-sm text-slate-500">{user.phone}</span>}
+                {user.birthYear && <span className="text-sm text-slate-500">Nato/a nel {user.birthYear}</span>}
               </div>
             </div>
           </div>

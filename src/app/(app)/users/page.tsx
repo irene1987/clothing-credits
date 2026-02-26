@@ -125,7 +125,7 @@ export default async function UsersPage({
                       </div>
                       <div>
                         <p className="font-medium text-slate-900">{user.firstName} {user.lastName}</p>
-                        {user.phone && <p className="text-xs text-slate-400">{user.phone}</p>}
+                        {user.birthYear && <p className="text-xs text-slate-400">{user.birthYear}</p>}
                       </div>
                     </div>
                   </td>

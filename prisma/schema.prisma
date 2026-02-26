@@ -14,7 +14,7 @@ model User {
   firstName    String
   lastName     String
   email        String?
-  phone        String?
+  birthYear    Int?
   credits      Int      @default(0)
   notes        String?
   isActive     Boolean  @default(true)

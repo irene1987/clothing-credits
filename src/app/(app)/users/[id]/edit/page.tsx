@@ -10,7 +10,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     firstName: '',
     lastName: '',
     cardNumber: '',
-    phone: '',
+    birthYear: '',
     email: '',
     notes: '',
     isActive: true,
@@ -27,7 +27,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           firstName: data.firstName,
           lastName: data.lastName,
           cardNumber: data.cardNumber,
-          phone: data.phone || '',
+          birthYear: data.birthYear ? String(data.birthYear) : '',
           email: data.email || '',
           notes: data.notes || '',
           isActive: data.isActive,
@@ -86,8 +86,8 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
         </div>
 
         <div>
-          <label className="label">Telefono</label>
-          <input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} />
+          <label className="label">Anno di nascita</label>
+          <input className="input" type="number" min={1900} max={new Date().getFullYear()} value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
         </div>
 
         <div>

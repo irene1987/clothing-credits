@@ -10,7 +10,7 @@ export default function NewUserPage() {
     firstName: '',
     lastName: '',
     cardNumber: '',
-    phone: '',
+    birthYear: '',
     email: '',
     credits: 0,
     notes: '',
@@ -88,8 +88,8 @@ export default function NewUserPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label">Telefono</label>
-            <input className="input" type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} />
+            <label className="label">Anno di nascita</label>
+            <input className="input" type="number" min={1900} max={new Date().getFullYear()} value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
           </div>
           <div>
             <label className="label">Crediti iniziali</label>
