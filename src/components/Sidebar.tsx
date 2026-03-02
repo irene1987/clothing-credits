@@ -4,12 +4,13 @@ import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import {
   LayoutDashboard, Users, ArrowLeftRight, LogOut,
-  Shirt, Settings, ChevronDown
+  Shirt, Settings, ShoppingBag
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/checkout', label: 'Checkout', icon: ShoppingBag },
   { href: '/users', label: 'Utenti', icon: Users },
   { href: '/transactions', label: 'Transazioni', icon: ArrowLeftRight },
 ]
