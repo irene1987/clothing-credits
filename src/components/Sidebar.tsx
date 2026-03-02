@@ -1,10 +1,11 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import {
   LayoutDashboard, Users, ArrowLeftRight, LogOut,
-  Shirt, Settings, ShoppingBag
+  Settings, ShoppingBag
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -27,14 +28,8 @@ export function Sidebar() {
   return (
     <aside className="w-64 shrink-0 bg-white border-r border-surface-200 flex flex-col min-h-screen">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-surface-200">
-        <div className="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center">
-          <Shirt className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <p className="font-semibold text-slate-900 text-sm leading-tight">DarBazar</p>
-          <p className="text-xs text-slate-400">Emporio sociale</p>
-        </div>
+      <div className="flex items-center px-6 py-5 border-b border-surface-200">
+        <Image src="/logo.png" alt="DarBazar" width={200} height={50} style={{ objectFit: 'contain', width: '100%', height: 'auto' }} priority />
       </div>
 
       {/* Nav */}
