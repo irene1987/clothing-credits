@@ -4,6 +4,7 @@ import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
 import { ResetAllCreditsButton } from '@/components/ResetAllCreditsButton'
 import { BulkAssignCreditsButton } from '@/components/BulkAssignCreditsButton'
+import { NewUsersChart, CheckoutUsersChart } from '@/components/DashboardMonthlySection'
 
 async function getNewUsersPerMonth() {
   const now = new Date()
@@ -43,13 +44,18 @@ async function getMonthlyStats() {
   since.setDate(1)
   since.setHours(0, 0, 0, 0)
 
-  const transactions = await prisma.transaction.findMany({
-    where: { type: 'SUBTRACT', createdAt: { gte: since } },
-    select: { userId: true, description: true, createdAt: true },
-    orderBy: { createdAt: 'asc' },
-  })
+  const [transactions, labels] = await Promise.all([
+    prisma.transaction.findMany({
+      where: { type: 'SUBTRACT', createdAt: { gte: since } },
+      select: { userId: true, description: true, createdAt: true },
+      orderBy: { createdAt: 'asc' },
+    }),
+    prisma.label.findMany({ select: { name: true, season: true, category: true } }),
+  ])
 
-  const monthMap = new Map<string, { users: Set<string>; products: Map<string, number> }>()
+  const labelMap = new Map(labels.map(l => [`${l.name}||${l.season}`, l.category]))
+
+  const monthMap = new Map<string, { users: Set<string>; products: Map<string, { name: string; season: string; count: number }> }>()
 
   for (const tx of transactions) {
     const date = new Date(tx.createdAt)
@@ -64,11 +70,18 @@ async function getMonthlyStats() {
 
     if (tx.description) {
       for (const part of tx.description.split(', ')) {
-        const match = part.match(/^(.+) \(.+\) x(\d+)$/)
+        const match = part.match(/^(.+) \((.+)\) x(\d+)$/)
         if (match) {
           const name = match[1]
-          const qty = parseInt(match[2])
-          entry.products.set(name, (entry.products.get(name) || 0) + qty)
+          const season = match[2]
+          const qty = parseInt(match[3])
+          const productKey = `${name}||${season}`
+          const existing = entry.products.get(productKey)
+          if (existing) {
+            existing.count += qty
+          } else {
+            entry.products.set(productKey, { name, season, count: qty })
+          }
         }
       }
     }
@@ -78,12 +91,18 @@ async function getMonthlyStats() {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, data]) => {
       const [year, month] = key.split('-')
-      const topProduct = Array.from(data.products.entries()).sort((a, b) => b[1] - a[1])[0]
+      const topEntry = Array.from(data.products.values()).sort((a, b) => b.count - a.count)[0]
+      const topProduct = topEntry ? {
+        name: topEntry.name,
+        season: topEntry.season,
+        category: labelMap.get(`${topEntry.name}||${topEntry.season}`) ?? null,
+        count: topEntry.count,
+      } : null
       return {
         key,
         label: new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('it-IT', { month: 'short', year: '2-digit' }),
         uniqueUsers: data.users.size,
-        topProduct: topProduct ? { name: topProduct[0], count: topProduct[1] } : null,
+        topProduct,
       }
     })
 }
@@ -210,45 +229,31 @@ export default async function DashboardPage() {
       </div>
 
       {/* New users per month */}
-      <div className="card">
-        <div className="flex items-center justify-between mb-1">
-          <p className="text-sm font-medium text-slate-500">Nuovi utenti per mese ({newUsersStats.year})</p>
-          <span className="text-xs font-semibold bg-brand-50 text-brand-600 px-2.5 py-1 rounded-full">
-            Totale anno: {newUsersStats.totalYear}
-          </span>
-        </div>
-        <BarChart items={newUsersStats.months.map(m => ({
-          label: m.label,
-          value: m.count,
-          color: 'bg-emerald-400',
-        }))} />
-      </div>
+      <NewUsersChart months={newUsersStats.months} year={newUsersStats.year} />
 
       {/* Monthly stats */}
       {monthlyStats.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="card">
-            <p className="text-sm font-medium text-slate-500">Utenti al ritiro per mese</p>
-            <BarChart items={monthlyStats.map(m => ({
-              label: m.label,
-              value: m.uniqueUsers,
-              color: 'bg-brand-500',
-            }))} />
-          </div>
+          <CheckoutUsersChart monthlyStats={monthlyStats} />
 
           <div className="card">
             <p className="text-sm font-medium text-slate-500">Prodotto più richiesto per mese</p>
             <div className="space-y-2 mt-4">
               {monthlyStats.map(m => (
-                <div key={m.key} className="flex items-center gap-3 text-sm">
-                  <span className="text-slate-400 w-10 shrink-0 capitalize">{m.label}</span>
+                <div key={m.key} className="flex items-start gap-3 text-sm">
+                  <span className="text-slate-400 w-10 shrink-0 capitalize pt-0.5">{m.label}</span>
                   {m.topProduct ? (
-                    <>
-                      <span className="font-medium text-slate-800 flex-1 truncate">{m.topProduct.name}</span>
-                      <span className="text-xs text-slate-400 shrink-0">{m.topProduct.count} pz</span>
-                    </>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-medium text-slate-800 block truncate">{m.topProduct.name}</span>
+                      <span className="text-xs text-slate-400">
+                        {[m.topProduct.category, m.topProduct.season].filter(Boolean).join(' · ')}
+                      </span>
+                    </div>
                   ) : (
                     <span className="text-slate-300 italic">—</span>
+                  )}
+                  {m.topProduct && (
+                    <span className="text-xs text-slate-400 shrink-0 pt-0.5">{m.topProduct.count} pz</span>
                   )}
                 </div>
               ))}
