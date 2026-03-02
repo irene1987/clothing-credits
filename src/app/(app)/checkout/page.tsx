@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Trash2, ShoppingBag } from 'lucide-react'
+import { Plus, Trash2, ShoppingBag, Pencil, Check } from 'lucide-react'
 
 interface User {
   id: string
@@ -110,6 +110,19 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const [editingQty, setEditingQty] = useState('')
+
+  const startEdit = (i: number) => {
+    setEditingIndex(i)
+    setEditingQty(String(cart[i].quantity))
+  }
+
+  const confirmEdit = (i: number) => {
+    const qty = Math.max(1, parseInt(editingQty) || 1)
+    setCart(prev => prev.map((item, idx) => idx === i ? { ...item, quantity: qty } : item))
+    setEditingIndex(null)
+  }
 
   useEffect(() => {
     fetch('/api/labels').then(r => r.json()).then(setAllLabels)
@@ -282,13 +295,41 @@ export default function CheckoutPage() {
                   <td className="px-5 py-3 font-medium text-slate-800">{item.label.name}</td>
                   <td className="px-5 py-3 text-slate-500">{item.label.season}</td>
                   <td className="px-5 py-3 text-slate-500">{item.label.category}</td>
-                  <td className="px-5 py-3 text-center text-slate-700">{item.quantity}</td>
+                  <td className="px-5 py-3 text-center text-slate-700">
+                    {editingIndex === i ? (
+                      <input
+                        type="number"
+                        className="input text-center w-16 py-1 px-2 text-sm"
+                        min={1}
+                        value={editingQty}
+                        onChange={e => setEditingQty(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') confirmEdit(i); if (e.key === 'Escape') setEditingIndex(null) }}
+                        onBlur={() => confirmEdit(i)}
+                        autoFocus
+                      />
+                    ) : (
+                      item.quantity
+                    )}
+                  </td>
                   <td className="px-5 py-3 text-right text-slate-500">{item.label.credits}</td>
-                  <td className="px-5 py-3 text-right font-semibold text-brand-600">{item.label.credits * item.quantity}</td>
+                  <td className="px-5 py-3 text-right font-semibold text-brand-600">
+                    {item.label.credits * (editingIndex === i ? (parseInt(editingQty) || 1) : item.quantity)}
+                  </td>
                   <td className="px-5 py-3 text-right">
-                    <button type="button" onClick={() => removeFromCart(i)} className="text-slate-300 hover:text-red-500 transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      {editingIndex === i ? (
+                        <button type="button" onClick={() => confirmEdit(i)} className="text-brand-500 hover:text-brand-700 transition-colors">
+                          <Check className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button type="button" onClick={() => startEdit(i)} className="text-slate-300 hover:text-brand-500 transition-colors">
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button type="button" onClick={() => removeFromCart(i)} className="text-slate-300 hover:text-red-500 transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

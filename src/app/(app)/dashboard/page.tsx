@@ -5,6 +5,38 @@ import Link from 'next/link'
 import { ResetAllCreditsButton } from '@/components/ResetAllCreditsButton'
 import { BulkAssignCreditsButton } from '@/components/BulkAssignCreditsButton'
 
+async function getNewUsersPerMonth() {
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const startOfYear = new Date(currentYear, 0, 1)
+
+  const users = await prisma.user.findMany({
+    where: { createdAt: { gte: startOfYear } },
+    select: { createdAt: true },
+    orderBy: { createdAt: 'asc' },
+  })
+
+  const monthMap = new Map<number, number>()
+  for (let i = 0; i <= now.getMonth(); i++) {
+    monthMap.set(i, 0)
+  }
+
+  for (const user of users) {
+    const month = new Date(user.createdAt).getMonth()
+    if (monthMap.has(month)) {
+      monthMap.set(month, (monthMap.get(month) || 0) + 1)
+    }
+  }
+
+  const months = Array.from(monthMap.entries()).map(([month, count]) => ({
+    key: month,
+    label: new Date(currentYear, month).toLocaleDateString('it-IT', { month: 'short' }),
+    count,
+  }))
+
+  return { months, totalYear: users.length, year: currentYear }
+}
+
 async function getMonthlyStats() {
   const since = new Date()
   since.setMonth(since.getMonth() - 11)
@@ -122,7 +154,7 @@ function BarChart({ items }: { items: { label: string; value: number; color: str
 }
 
 export default async function DashboardPage() {
-  const [stats, monthlyStats] = await Promise.all([getStats(), getMonthlyStats()])
+  const [stats, monthlyStats, newUsersStats] = await Promise.all([getStats(), getMonthlyStats(), getNewUsersPerMonth()])
 
   return (
     <div className="animate-in space-y-8">
@@ -175,6 +207,21 @@ export default async function DashboardPage() {
             { label: 'Non specificato', value: stats.adultiNullGender, color: 'bg-slate-300' },
           ]} />
         </div>
+      </div>
+
+      {/* New users per month */}
+      <div className="card">
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-sm font-medium text-slate-500">Nuovi utenti per mese ({newUsersStats.year})</p>
+          <span className="text-xs font-semibold bg-brand-50 text-brand-600 px-2.5 py-1 rounded-full">
+            Totale anno: {newUsersStats.totalYear}
+          </span>
+        </div>
+        <BarChart items={newUsersStats.months.map(m => ({
+          label: m.label,
+          value: m.count,
+          color: 'bg-emerald-400',
+        }))} />
       </div>
 
       {/* Monthly stats */}

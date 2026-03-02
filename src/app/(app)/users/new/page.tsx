@@ -91,12 +91,12 @@ export default function NewUserPage() {
 
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="label">Anno di nascita</label>
-            <input className="input" type="number" min={1900} max={new Date().getFullYear()} value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
+            <label className="label">Anno di nascita *</label>
+            <input className="input" type="number" min={1900} max={new Date().getFullYear()} required value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
           </div>
           <div>
-            <label className="label">Genere</label>
-            <select className="input" value={form.gender} onChange={e => set('gender', e.target.value)}>
+            <label className="label">Genere *</label>
+            <select className="input" required value={form.gender} onChange={e => set('gender', e.target.value)}>
               <option value="">—</option>
               <option value="M">M</option>
               <option value="F">F</option>
@@ -104,15 +104,15 @@ export default function NewUserPage() {
             </select>
           </div>
           <div>
-            <label className="label">Età</label>
-            <input className="input" type="number" min={0} max={120} value={form.age} onChange={e => set('age', e.target.value)} />
+            <label className="label">Età *</label>
+            <input className="input" type="number" min={0} max={120} required value={form.age} onChange={e => set('age', e.target.value)} />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label">Tags</label>
-            <select className="input" value={form.tags} onChange={e => set('tags', e.target.value)}>
+            <label className="label">Tags *</label>
+            <select className="input" required value={form.tags} onChange={e => set('tags', e.target.value)}>
               <option value="">—</option>
               <option value="adult*">adult*</option>
               <option value="bambin*">bambin*</option>
