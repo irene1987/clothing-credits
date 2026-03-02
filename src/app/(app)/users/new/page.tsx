@@ -119,11 +119,12 @@ export default function NewUserPage() {
             </select>
           </div>
           <div>
-            <label className="label">Crediti iniziali</label>
+            <label className="label">Crediti iniziali *</label>
             <input
               className="input"
               type="number"
               min={0}
+              required
               value={form.credits}
               onChange={e => set('credits', parseInt(e.target.value) || 0)}
             />
