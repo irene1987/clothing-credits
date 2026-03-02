@@ -3,6 +3,7 @@ import { Users, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
 import { ResetAllCreditsButton } from '@/components/ResetAllCreditsButton'
+import { BulkAssignCreditsButton } from '@/components/BulkAssignCreditsButton'
 
 async function getStats() {
   const [
@@ -79,7 +80,10 @@ export default async function DashboardPage() {
           </h1>
           <p className="text-slate-500 mt-1">Panoramica del sistema di crediti</p>
         </div>
-        <ResetAllCreditsButton />
+        <div className="flex items-center gap-2">
+          <BulkAssignCreditsButton />
+          <ResetAllCreditsButton />
+        </div>
       </div>
 
       {/* Stats top */}
