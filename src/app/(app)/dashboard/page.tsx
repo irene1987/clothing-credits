@@ -5,6 +5,57 @@ import Link from 'next/link'
 import { ResetAllCreditsButton } from '@/components/ResetAllCreditsButton'
 import { BulkAssignCreditsButton } from '@/components/BulkAssignCreditsButton'
 
+async function getMonthlyStats() {
+  const since = new Date()
+  since.setMonth(since.getMonth() - 11)
+  since.setDate(1)
+  since.setHours(0, 0, 0, 0)
+
+  const transactions = await prisma.transaction.findMany({
+    where: { type: 'SUBTRACT', createdAt: { gte: since } },
+    select: { userId: true, description: true, createdAt: true },
+    orderBy: { createdAt: 'asc' },
+  })
+
+  const monthMap = new Map<string, { users: Set<string>; products: Map<string, number> }>()
+
+  for (const tx of transactions) {
+    const date = new Date(tx.createdAt)
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+
+    if (!monthMap.has(key)) {
+      monthMap.set(key, { users: new Set(), products: new Map() })
+    }
+
+    const entry = monthMap.get(key)!
+    entry.users.add(tx.userId)
+
+    if (tx.description) {
+      for (const part of tx.description.split(', ')) {
+        const match = part.match(/^(.+) \(.+\) x(\d+)$/)
+        if (match) {
+          const name = match[1]
+          const qty = parseInt(match[2])
+          entry.products.set(name, (entry.products.get(name) || 0) + qty)
+        }
+      }
+    }
+  }
+
+  return Array.from(monthMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, data]) => {
+      const [year, month] = key.split('-')
+      const topProduct = Array.from(data.products.entries()).sort((a, b) => b[1] - a[1])[0]
+      return {
+        key,
+        label: new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('it-IT', { month: 'short', year: '2-digit' }),
+        uniqueUsers: data.users.size,
+        topProduct: topProduct ? { name: topProduct[0], count: topProduct[1] } : null,
+      }
+    })
+}
+
 async function getStats() {
   const [
     totalUsers,
@@ -71,7 +122,7 @@ function BarChart({ items }: { items: { label: string; value: number; color: str
 }
 
 export default async function DashboardPage() {
-  const stats = await getStats()
+  const [stats, monthlyStats] = await Promise.all([getStats(), getMonthlyStats()])
 
   return (
     <div className="animate-in space-y-8">
@@ -125,6 +176,43 @@ export default async function DashboardPage() {
           ]} />
         </div>
       </div>
+
+      {/* Monthly stats */}
+      {monthlyStats.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="card">
+            <p className="text-sm font-medium text-slate-500">Utenti al ritiro per mese</p>
+            <BarChart items={monthlyStats.map(m => ({
+              label: m.label,
+              value: m.uniqueUsers,
+              color: 'bg-brand-500',
+            }))} />
+          </div>
+
+          <div className="card">
+            <p className="text-sm font-medium text-slate-500">Prodotto più richiesto per mese</p>
+            <div className="space-y-2 mt-4">
+              {monthlyStats.map(m => (
+                <div key={m.key} className="flex items-center gap-3 text-sm">
+                  <span className="text-slate-400 w-10 shrink-0 capitalize">{m.label}</span>
+                  {m.topProduct ? (
+                    <>
+                      <span className="font-medium text-slate-800 flex-1 truncate">{m.topProduct.name}</span>
+                      <span className="text-xs text-slate-400 shrink-0">{m.topProduct.count} pz</span>
+                    </>
+                  ) : (
+                    <span className="text-slate-300 italic">—</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="card text-center py-8 text-slate-400 text-sm">
+          Nessun checkout ancora registrato
+        </div>
+      )}
 
       {/* Recent transactions */}
       <div className="card">

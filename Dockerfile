@@ -36,9 +36,9 @@ ENV HOSTNAME="0.0.0.0"
 # QUESTO PER IMPORTARE GLI UTENTI AD OGNI DEPLOY --> lascia comando vuoto nel pre-deploy
 # CMD ["sh", "-c", "node_modules/.bin/prisma db push && node_modules/.bin/tsx prisma/import-users.ts && node_modules/.bin/tsx prisma/import-labels.ts && node_modules/.bin/tsx prisma/seed.ts && node server.js"]
 # QUESTO PER IMPORTARE LE LABELS AD OGNI DEPLOY --> lascia comando vuoto nel pre-deploy
-# CMD ["sh", "-c", "node_modules/.bin/prisma db push && node_modules/.bin/tsx prisma/import-labels.ts && node_modules/.bin/tsx prisma/seed.ts && node server.js"]
+CMD ["sh", "-c", "node_modules/.bin/prisma db push && node_modules/.bin/tsx prisma/import-labels.ts && node_modules/.bin/tsx prisma/seed.ts && node server.js"]
 
 
 # QUESTO PER IL DEPLOY NORMALE --> metti questo comando nel pre-deploy: node_modules/.bin/prisma db push
 
-CMD ["sh", "-c", "node_modules/.bin/tsx prisma/seed.ts && node server.js"]
+# CMD ["sh", "-c", "node_modules/.bin/tsx prisma/seed.ts && node server.js"]

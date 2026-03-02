@@ -1,19 +1,95 @@
-name,dar,season,category,valid_from,valid_to
-Vestiti,1,4stagioni,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
-Vestiti,1,Inverno,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
-Vestiti,1,Estate,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,4stagioni,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,4stagioni,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,4stagioni,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,Inverno,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,Inverno,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,Inverno,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,Estate,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,10,Estate,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
-Scarpe,3,Estate,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
-Pantaloni lunghi,5,4stagioni,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
-Pantaloni lunghi,5,4stagioni,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
-Pantaloni lunghi,5,Inverno,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
-Pantaloni lunghi,5,Inverno,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
-Pantaloni lunghi,5,Estate,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
-Pantaloni lunghi,5,Estate,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
+name                    , dar, season   , category    , valid_from         , valid_to
+Vestiti                 , 1  , 4stagioni, Child       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Vestiti                 , 1  , Inverno  , Child       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Vestiti                 , 1  , Estate   , Child       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , 4stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , 4stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , 4stagioni, Child       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , Inverno  , Child       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , Estate   , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 10 , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Scarpe                  , 3  , Estate   , Child       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni lunghi        , 5  , 4stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni lunghi        , 5  , 4stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni lunghi        , 5  , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni lunghi        , 5  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni lunghi        , 5  , Estate   , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni lunghi        , 5  , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Magliette maniche corte , 3  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Magliette maniche corte , 3  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Magliette maniche lunghe, 3  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Magliette maniche lunghe, 3  , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Giacche                 , 10 , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Giacche                 , 10 , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Giacche                 , 8  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Giacche                 , 8  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Abiti                   , 5  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Abiti                   , 5  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Abiti                   , 5  , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Ciabatte                , 5  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Ciabatte                , 5  , Inverno  , Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Ciabatte                , 5  , Estate   , Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Leggins                 , 2  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Bigiotteria             , 3  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Accessori - cinture     , 4  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Accessori               , 4  , 4Stagioni, Unisex Baby , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Accessori               , 4  , 4Stagioni, Unisex Child, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Accessori - cappelli    , 4  , Inverno  , Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Accessori               , 1  , Inverno  , Unisex Child, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Accessori               , 1  , Inverno  , Unisex Baby , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Camicie                 , 3  , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Camicie                 , 3  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Camicie maniche corte   , 3  , Estate   , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Camicie                 , 3  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Camicie                 , 3  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Calzini                 , 1  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Calzini                 , 1  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Calzini                 , 1  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Calzini                 , 1  , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Costumi                 , 4  , Estate   , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Costumi                 , 4  , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Canotte                 , 3  , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Canotte                 , 3  , Estate   , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni corti         , 4  , Estate   , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pantaloni corti         , 4  , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sciarpe e foulard       , 1  , Estate   , Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pigiami - 1 pezzo       , 4  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Pigiami - completo      , 7  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Lenzuola doppie         , 7  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Lenzuola singole        , 5  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Lenzuola                , 3  , 4Stagioni, Unisex baby , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Lenzuola                , 3  , 4Stagioni, Unisex child, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Federe                  , 2  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Borse piccole           , 4  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Borse grandi            , 6  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Zaini                   , 8  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Valige - borsoni        , 10 , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Intimo                  , 2  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Intimo                  , 2  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Intimo                  , 1  , 4Stagioni, Unisex Child, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Intimo                  , 1  , 4Stagioni, Unisex Baby , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Collant                 , 2  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Collant                 , 2  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Asciugamani piccoli/medi, 3  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Asciugamani grandi      , 7  , 4Stagioni, Unisex Adult, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sopra leggero           , 5  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sopra leggero           , 5  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sopra leggero           , 5  , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Maglioni                , 5  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Maglioni                , 5  , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sport                   , 4  , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sport                   , 4  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sport                   , 4  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sport                   , 4  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Sport                   , 1  , 4Stagioni, Unisex child, 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Felpe                   , 5  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Felpe                   , 5  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Felpe                   , 5  , Inverno  , Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Felpe                   , 5  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Gonne                   , 3  , Inverno  , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Gonne                   , 3  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Gonne                   , 3  , Estate   , Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Completo elegante       , 5  , 4Stagioni, Donna       , 1900-01-01 00:00:00, 2100-01-01 00:00:00
+Completo elegante       , 5  , 4Stagioni, Uomo        , 1900-01-01 00:00:00, 2100-01-01 00:00:00
