@@ -16,7 +16,6 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     tags: '',
     email: '',
     notes: '',
-    isActive: true,
   })
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
@@ -36,7 +35,6 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           tags: data.tags || '',
           email: data.email || '',
           notes: data.notes || '',
-          isActive: data.isActive,
         })
         setFetching(false)
       })
@@ -120,16 +118,6 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           <label className="label">Note</label>
           <textarea className="input resize-none" rows={3} value={form.notes} onChange={e => set('notes', e.target.value)} />
         </div>
-
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            className="w-4 h-4 rounded accent-brand-600"
-            checked={form.isActive}
-            onChange={e => set('isActive', e.target.checked)}
-          />
-          <span className="text-sm font-medium text-slate-700">Utente attivo</span>
-        </label>
 
         {error && <div className="text-sm text-red-600 bg-red-50 rounded-xl p-3">{error}</div>}
 

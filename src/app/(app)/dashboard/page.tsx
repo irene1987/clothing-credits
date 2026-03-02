@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { Users, ArrowUpRight, ArrowDownRight, TrendingUp, Shirt } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
+import { ResetAllCreditsButton } from '@/components/ResetAllCreditsButton'
 
 async function getStats() {
   const [totalUsers, activeUsers, totalTransactions, recentTransactions] = await Promise.all([
@@ -58,11 +59,14 @@ export default async function DashboardPage() {
   return (
     <div className="animate-in space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
-          Dashboard
-        </h1>
-        <p className="text-slate-500 mt-1">Panoramica del sistema di crediti</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
+            Dashboard
+          </h1>
+          <p className="text-slate-500 mt-1">Panoramica del sistema di crediti</p>
+        </div>
+        <ResetAllCreditsButton />
       </div>
 
       {/* Stats */}
