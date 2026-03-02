@@ -6,13 +6,10 @@ const prisma = new PrismaClient()
 async function main() {
   const passwordHash = await bcrypt.hash('2020', 12)
 
-  // Elimina vecchi admin
-  await prisma.operator.deleteMany({
-    where: { role: Role.ADMIN }
-  })
-
-  const admin = await prisma.operator.create({
-    data: {
+  const admin = await prisma.operator.upsert({
+    where: { email: 'darbazarsociale@gmail.com' },
+    update: { passwordHash },
+    create: {
       email: 'darbazarsociale@gmail.com',
       name: 'Administrator',
       passwordHash,

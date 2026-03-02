@@ -111,7 +111,11 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
         <div>
           <label className="label">Tags</label>
-          <input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} />
+          <select className="input" value={form.tags} onChange={e => set('tags', e.target.value)}>
+            <option value="">—</option>
+            <option value="adult*">adult*</option>
+            <option value="bambin*">bambin*</option>
+          </select>
         </div>
 
         <div>
