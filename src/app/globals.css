@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    --brand: #16a34a;
-    --brand-light: #dcfce7;
-    --brand-dark: #14532d;
+    --brand: #c42040;
+    --brand-light: #ffe1e5;
+    --brand-dark: #851929;
   }
 
   * {
