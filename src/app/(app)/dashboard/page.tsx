@@ -16,6 +16,7 @@ async function getStats() {
     adultiM,
     adultiNB,
     adultiNullGender,
+    usersWithCredits,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.user.count({ where: { isActive: true } }),
@@ -30,6 +31,7 @@ async function getStats() {
     prisma.user.count({ where: { tags: { contains: 'adult', mode: 'insensitive' }, gender: 'M' } }),
     prisma.user.count({ where: { tags: { contains: 'adult', mode: 'insensitive' }, gender: 'NB' } }),
     prisma.user.count({ where: { tags: { contains: 'adult', mode: 'insensitive' }, gender: null } }),
+    prisma.user.count({ where: { credits: { gt: 0 } } }),
   ])
 
   return {
@@ -42,6 +44,7 @@ async function getStats() {
     adultiM,
     adultiNB,
     adultiNullGender,
+    usersWithCredits,
   }
 }
 
@@ -81,7 +84,7 @@ export default async function DashboardPage() {
           <p className="text-slate-500 mt-1">Panoramica del sistema di crediti</p>
         </div>
         <div className="flex items-center gap-2">
-          <BulkAssignCreditsButton />
+          <BulkAssignCreditsButton usersWithCredits={stats.usersWithCredits} />
           <ResetAllCreditsButton />
         </div>
       </div>

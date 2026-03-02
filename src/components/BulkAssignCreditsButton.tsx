@@ -3,11 +3,23 @@ import { useState } from 'react'
 import { Gift } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-export function BulkAssignCreditsButton() {
+export function BulkAssignCreditsButton({ usersWithCredits }: { usersWithCredits: number }) {
   const [confirm, setConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<{ adulti: number; bambini: number } | null>(null)
   const router = useRouter()
+
+  if (usersWithCredits > 0) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-red-600 font-medium">Prima devi azzerare tutti i crediti!</span>
+        <button disabled className="btn-secondary text-sm opacity-40 cursor-not-allowed">
+          <Gift className="w-4 h-4" />
+          Assegna crediti
+        </button>
+      </div>
+    )
+  }
 
   const handleAssign = async () => {
     setLoading(true)

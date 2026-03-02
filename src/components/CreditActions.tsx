@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Minus, RefreshCw } from 'lucide-react'
+import { Plus, Minus } from 'lucide-react'
 
 interface Props {
   userId: string
@@ -68,7 +68,7 @@ export function CreditActions({ userId, currentCredits }: Props) {
         <input
           type="text"
           className="input"
-          placeholder="es. Ritiro magliette invernali"
+
           value={description}
           onChange={e => setDescription(e.target.value)}
         />
@@ -92,17 +92,6 @@ export function CreditActions({ userId, currentCredits }: Props) {
           Sottrai
         </button>
       </div>
-
-      <button
-        className="btn-secondary w-full justify-center text-amber-600 border-amber-200 hover:bg-amber-50"
-        onClick={() => {
-          if (confirm('Azzerare i crediti di questo utente?')) submit('RESET')
-        }}
-        disabled={loading}
-      >
-        <RefreshCw className="w-4 h-4" />
-        Azzera crediti
-      </button>
 
       {message && (
         <div className={`text-sm rounded-xl p-3 text-center ${
