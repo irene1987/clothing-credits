@@ -59,6 +59,18 @@ model Operator {
   transactions Transaction[]
 }
 
+model Label {
+  id        String   @id @default(cuid())
+  name      String
+  credits   Int
+  season    String
+  category  String
+  createdAt DateTime @default(now())
+
+  @@index([category])
+  @@index([season])
+}
+
 enum TransactionType {
   ADD
   SUBTRACT

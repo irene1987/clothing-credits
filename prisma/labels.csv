@@ -1,0 +1,19 @@
+name,dar,season,category,valid_from,valid_to
+Vestiti,1,4stagioni,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
+Vestiti,1,Inverno,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
+Vestiti,1,Estate,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,4stagioni,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,4stagioni,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,4stagioni,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,Inverno,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,Inverno,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,Inverno,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,Estate,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,10,Estate,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
+Scarpe,3,Estate,Child,1900-01-01 00:00:00,2100-01-01 00:00:00
+Pantaloni lunghi,5,4stagioni,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
+Pantaloni lunghi,5,4stagioni,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
+Pantaloni lunghi,5,Inverno,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
+Pantaloni lunghi,5,Inverno,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
+Pantaloni lunghi,5,Estate,Uomo,1900-01-01 00:00:00,2100-01-01 00:00:00
+Pantaloni lunghi,5,Estate,Donna,1900-01-01 00:00:00,2100-01-01 00:00:00
