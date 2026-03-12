@@ -19,7 +19,9 @@ export default async function UserDetailPage({ params }: { params: { id: string 
 
   if (!user) notFound()
 
-  const maxCredits = 20 // Customizable
+    
+
+  const maxCredits = user.tags === 'adult*' ? 50 : 20
 
   return (
     <div className="animate-in space-y-6 max-w-4xl">

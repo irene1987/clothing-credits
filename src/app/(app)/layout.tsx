@@ -10,7 +10,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-8 overflow-auto">
+      {/* pt-14 on mobile to clear the fixed top bar; md:pt-0 restores normal flow */}
+      <main className="flex-1 p-8 pt-[calc(3.5rem+2rem)] md:pt-8 overflow-auto">
         {children}
       </main>
     </div>
