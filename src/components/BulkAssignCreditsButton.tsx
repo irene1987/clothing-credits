@@ -22,20 +22,11 @@ export function BulkAssignCreditsButton({ usersWithCredits }: { usersWithCredits
   // ── Disabled state: credits not yet reset ──────────────────────────────────
   if (usersWithCredits > 0) {
     return (
-      <div className="relative">
-        <button disabled className="btn-secondary text-sm opacity-40 cursor-not-allowed">
-          <Gift className="w-4 h-4 shrink-0" />
-          <span className="hidden sm:inline">Assegna crediti</span>
-          <span className="sm:hidden">Assegna</span>
-        </button>
-        {/* Tooltip-style warning shown below on mobile, inline on desktop */}
-        <p className="absolute right-0 top-full mt-1.5 w-56 text-xs text-red-600 font-medium bg-red-50 border border-red-100 rounded-xl px-3 py-2 shadow-sm whitespace-normal z-50 sm:hidden">
-          Prima azzera tutti i crediti!
-        </p>
-        <p className="hidden sm:block text-sm text-red-600 font-medium mt-1 text-right whitespace-nowrap">
-          Prima devi azzerare tutti i crediti!
-        </p>
-      </div>
+      <button disabled className="btn-secondary text-sm opacity-40 cursor-not-allowed" title="Prima devi azzerare tutti i crediti">
+        <Gift className="w-4 h-4 shrink-0" />
+        <span className="hidden sm:inline">Assegna crediti</span>
+        <span className="sm:hidden">Assegna</span>
+      </button>
     )
   }
 
