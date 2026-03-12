@@ -66,8 +66,8 @@ function SearchCombobox<T>({
   if (selected) {
     return (
       <div className="flex items-center gap-2">
-        <span className="input flex-1 bg-brand-50 text-brand-800 font-medium">{renderSelected(selected)}</span>
-        <button type="button" onClick={() => { onSelect(null as any); setQuery('') }} className="btn-secondary text-sm px-3">
+        <span className="input flex-1 bg-brand-50 text-brand-800 font-medium truncate">{renderSelected(selected)}</span>
+        <button type="button" onClick={() => { onSelect(null as any); setQuery('') }} className="btn-secondary text-sm px-3 shrink-0">
           Cambia
         </button>
       </div>
@@ -194,31 +194,31 @@ export default function CheckoutPage() {
   return (
     <div className="animate-in space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
+        <h1 className="text-3xl md:text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
           Checkout
         </h1>
-        <p className="text-slate-500 mt-1">Scala i crediti in base ai prodotti ritirati</p>
+        <p className="text-slate-500 mt-1 text-sm">Scala i crediti in base ai prodotti ritirati</p>
       </div>
 
       {/* Step 1 - Utente */}
       <div className="card space-y-3">
         <p className="text-sm font-medium text-slate-500">1. Seleziona utente</p>
         <SearchCombobox<User>
-          placeholder="Cerca per numero tessera, nome o cognome..."
+          placeholder="Cerca tessera, nome o cognome..."
           onSearch={searchUsers}
           onSelect={setUser}
           selected={user}
           renderOption={u => (
-            <div>
-              <span className="font-mono text-brand-600 mr-2">{u.cardNumber}</span>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <span className="font-mono text-brand-600">{u.cardNumber}</span>
               <span className="font-medium text-slate-800">{u.firstName} {u.lastName}</span>
-              <span className="ml-2 text-slate-400 text-xs">{u.credits} crediti</span>
+              <span className="text-slate-400 text-xs">{u.credits} crediti</span>
             </div>
           )}
           renderSelected={u => `${u.cardNumber} — ${u.firstName} ${u.lastName}`}
         />
         {user && (
-          <div className="flex items-center gap-3 pt-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1">
             <span className="text-sm text-slate-500">Budget iniziale:</span>
             <span className="font-bold text-slate-900">{user.credits} cr.</span>
             <span className="text-slate-300">→</span>
@@ -233,7 +233,8 @@ export default function CheckoutPage() {
       {/* Step 2 - Aggiungi prodotto */}
       <div className="card space-y-3">
         <p className="text-sm font-medium text-slate-500">2. Aggiungi prodotti</p>
-        <div className="flex gap-3 items-end">
+        {/* Stack vertically on mobile, row on sm+ */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
           <div className="flex-1">
             <label className="label">Tipo prodotto</label>
             <SearchCombobox<Label>
@@ -242,123 +243,176 @@ export default function CheckoutPage() {
               onSelect={setSelectedLabel}
               selected={selectedLabel}
               renderOption={l => (
-                <div>
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                   <span className="font-medium text-slate-800">{l.name}</span>
-                  <span className="ml-2 text-xs text-slate-500">{l.season}</span>
-                  <span className="ml-2 text-xs text-slate-400">{l.category}</span>
-                  <span className="ml-auto float-right font-semibold text-brand-600">{l.credits} cr.</span>
+                  <span className="text-xs text-slate-500">{l.season}</span>
+                  <span className="text-xs text-slate-400">{l.category}</span>
+                  <span className="ml-auto font-semibold text-brand-600">{l.credits} cr.</span>
                 </div>
               )}
               renderSelected={l => `${l.name} — ${l.season} — ${l.category} (${l.credits} cr.)`}
             />
           </div>
-          <div className="w-24">
-            <label className="label">Quantità</label>
-            <input
-              type="number"
-              className="input text-center"
-              min={1}
-              value={quantity}
-              onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-            />
+          <div className="flex gap-3 sm:gap-3 items-end">
+            <div className="w-24 shrink-0">
+              <label className="label">Quantità</label>
+              <input
+                type="number"
+                className="input text-center"
+                min={1}
+                value={quantity}
+                onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={addToCart}
+              disabled={!selectedLabel}
+              className="btn-primary flex-1 sm:flex-none"
+            >
+              <Plus className="w-4 h-4" />
+              Aggiungi
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={addToCart}
-            disabled={!selectedLabel}
-            className="btn-primary"
-          >
-            <Plus className="w-4 h-4" />
-            Aggiungi
-          </button>
         </div>
       </div>
 
       {/* Cart */}
       {cart.length > 0 && (
-        <div className="card p-0 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-surface-200 bg-surface-50">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Prodotto</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stagione</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Categoria</th>
-                <th className="text-center px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Qtà</th>
-                <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Crediti/pz</th>
-                <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Totale</th>
-                <th className="px-5 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-surface-100">
-              {cart.map((item, i) => (
-                <tr key={i} className="hover:bg-surface-50">
-                  <td className="px-5 py-3 font-medium text-slate-800">{item.label.name}</td>
-                  <td className="px-5 py-3 text-slate-500">{item.label.season}</td>
-                  <td className="px-5 py-3 text-slate-500">{item.label.category}</td>
-                  <td className="px-5 py-3 text-center text-slate-700">
-                    {editingIndex === i ? (
-                      <input
-                        type="number"
-                        className="input text-center w-16 py-1 px-2 text-sm"
-                        min={1}
-                        value={editingQty}
-                        onChange={e => setEditingQty(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') confirmEdit(i); if (e.key === 'Escape') setEditingIndex(null) }}
-                        onBlur={() => confirmEdit(i)}
-                        autoFocus
-                      />
-                    ) : (
-                      item.quantity
-                    )}
-                  </td>
-                  <td className="px-5 py-3 text-right text-slate-500">{item.label.credits}</td>
-                  <td className="px-5 py-3 text-right font-semibold text-brand-600">
-                    {item.label.credits * (editingIndex === i ? (parseInt(editingQty) || 1) : item.quantity)}
-                  </td>
-                  <td className="px-5 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {editingIndex === i ? (
-                        <button type="button" onClick={() => confirmEdit(i)} className="text-brand-500 hover:text-brand-700 transition-colors">
-                          <Check className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <button type="button" onClick={() => startEdit(i)} className="text-slate-300 hover:text-brand-500 transition-colors">
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                      )}
-                      <button type="button" onClick={() => removeFromCart(i)} className="text-slate-300 hover:text-red-500 transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+        <>
+          {/* Desktop table (sm+) */}
+          <div className="hidden sm:block card p-0 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-surface-200 bg-surface-50">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Prodotto</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stagione</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Categoria</th>
+                  <th className="text-center px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Qtà</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Cr./pz</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Totale</th>
+                  <th className="px-5 py-3"></th>
                 </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="border-t-2 border-surface-200 bg-surface-50">
-                <td colSpan={5} className="px-5 py-3 text-sm font-semibold text-slate-600 text-right">Totale crediti da scalare</td>
-                <td className="px-5 py-3 text-right text-xl font-bold text-brand-600">{totalCredits}</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-surface-100">
+                {cart.map((item, i) => (
+                  <tr key={i} className="hover:bg-surface-50">
+                    <td className="px-5 py-3 font-medium text-slate-800">{item.label.name}</td>
+                    <td className="px-5 py-3 text-slate-500">{item.label.season}</td>
+                    <td className="px-5 py-3 text-slate-500">{item.label.category}</td>
+                    <td className="px-5 py-3 text-center text-slate-700">
+                      {editingIndex === i ? (
+                        <input
+                          type="number"
+                          className="input text-center w-16 py-1 px-2 text-sm"
+                          min={1}
+                          value={editingQty}
+                          onChange={e => setEditingQty(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') confirmEdit(i); if (e.key === 'Escape') setEditingIndex(null) }}
+                          onBlur={() => confirmEdit(i)}
+                          autoFocus
+                        />
+                      ) : item.quantity}
+                    </td>
+                    <td className="px-5 py-3 text-right text-slate-500">{item.label.credits}</td>
+                    <td className="px-5 py-3 text-right font-semibold text-brand-600">
+                      {item.label.credits * (editingIndex === i ? (parseInt(editingQty) || 1) : item.quantity)}
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {editingIndex === i ? (
+                          <button type="button" onClick={() => confirmEdit(i)} className="text-brand-500 hover:text-brand-700 transition-colors">
+                            <Check className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <button type="button" onClick={() => startEdit(i)} className="text-slate-300 hover:text-brand-500 transition-colors">
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                        )}
+                        <button type="button" onClick={() => removeFromCart(i)} className="text-slate-300 hover:text-red-500 transition-colors">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-surface-200 bg-surface-50">
+                  <td colSpan={5} className="px-5 py-3 text-sm font-semibold text-slate-600 text-right">Totale crediti da scalare</td>
+                  <td className="px-5 py-3 text-right text-xl font-bold text-brand-600">{totalCredits}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          {/* Mobile cart cards (< sm) */}
+          <div className="sm:hidden card p-0 overflow-hidden divide-y divide-surface-100">
+            {cart.map((item, i) => (
+              <div key={i} className="p-4 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="font-medium text-slate-800 truncate">{item.label.name}</p>
+                    <p className="text-xs text-slate-400">{item.label.season} · {item.label.category}</p>
+                  </div>
+                  <button type="button" onClick={() => removeFromCart(i)} className="text-slate-300 hover:text-red-500 transition-colors shrink-0 mt-0.5">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-slate-500">{item.label.credits} cr./pz ×</span>
+                  {/* Inline quantity edit */}
+                  {editingIndex === i ? (
+                    <input
+                      type="number"
+                      className="input text-center w-16 py-1 px-2 text-sm"
+                      min={1}
+                      value={editingQty}
+                      onChange={e => setEditingQty(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') confirmEdit(i); if (e.key === 'Escape') setEditingIndex(null) }}
+                      onBlur={() => confirmEdit(i)}
+                      autoFocus
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => startEdit(i)}
+                      className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-brand-600 transition-colors"
+                    >
+                      {item.quantity}
+                      <Pencil className="w-3 h-3 text-slate-300" />
+                    </button>
+                  )}
+                  <span className="ml-auto font-bold text-brand-600">
+                    = {item.label.credits * (editingIndex === i ? (parseInt(editingQty) || 1) : item.quantity)} cr.
+                  </span>
+                </div>
+              </div>
+            ))}
+            {/* Total row */}
+            <div className="flex items-center justify-between px-4 py-3 bg-surface-50">
+              <span className="text-sm font-semibold text-slate-600">Totale da scalare</span>
+              <span className="text-xl font-bold text-brand-600">{totalCredits} cr.</span>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Save */}
       {cart.length > 0 && (
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <button
             onClick={handleSave}
             disabled={!user || loading || (remainingCredits !== null && remainingCredits < 0)}
-            className="btn-primary"
+            className="btn-primary w-full sm:w-auto justify-center"
           >
             <ShoppingBag className="w-4 h-4" />
             {loading ? 'Salvataggio...' : 'Salva e scala crediti'}
           </button>
-          {!user && <span className="text-sm text-slate-400">Seleziona prima un utente</span>}
+          {!user && <span className="text-sm text-slate-400 text-center sm:text-left">Seleziona prima un utente</span>}
           {user && remainingCredits !== null && remainingCredits < 0 && (
-            <span className="text-sm text-red-600 font-medium">Crediti insufficienti!</span>
+            <span className="text-sm text-red-600 font-medium text-center sm:text-left">Crediti insufficienti!</span>
           )}
         </div>
       )}
