@@ -19,8 +19,6 @@ export default async function UserDetailPage({ params }: { params: { id: string 
 
   if (!user) notFound()
 
-    
-
   const maxCredits = user.tags === 'adult*' ? 50 : 20
 
   return (
@@ -31,31 +29,50 @@ export default async function UserDetailPage({ params }: { params: { id: string 
         Tutti gli utenti
       </Link>
 
-      {/* Header */}
+      {/* Header card */}
       <div className="card">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-brand-100 flex items-center justify-center text-brand-700 text-2xl font-bold">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          
+          {/* Avatar + info */}
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-brand-100 flex items-center justify-center text-brand-700 text-xl sm:text-2xl font-bold shrink-0">
               {user.firstName.charAt(0)}{user.lastName.charAt(0)}
             </div>
-            <div>
-              <h1 className="text-3xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl text-slate-900 leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
                 {user.firstName} {user.lastName}
               </h1>
-              <p className="text-slate-500 font-mono text-sm">{user.cardNumber}</p>
-              <div className="flex items-center gap-2 mt-1">
+              <p className="text-slate-500 font-mono text-sm mt-0.5">{user.cardNumber}</p>
+
+              {/* Badges & meta — wrapping row */}
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2">
                 {user.isActive
                   ? <span className="badge-green">Attivo</span>
                   : <span className="badge-slate">Disabilitato</span>
                 }
-                {user.birthYear && <span className="text-sm text-slate-500">Nato/a nel {user.birthYear}</span>}
-                {user.gender && <span className="text-sm text-slate-500">{user.gender}</span>}
-                {user.age && <span className="text-sm text-slate-500">{user.age} anni</span>}
-                {user.tags && <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{user.tags}</span>}
+                {user.birthYear && (
+                  <span className="text-sm text-slate-500">Nato/a nel {user.birthYear}</span>
+                )}
+                {user.gender && (
+                  <span className="text-sm text-slate-500">{user.gender}</span>
+                )}
+                {user.age && (
+                  <span className="text-sm text-slate-500">{user.age} anni</span>
+                )}
+                {user.tags && (
+                  <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                    {user.tags}
+                  </span>
+                )}
               </div>
             </div>
           </div>
-          <Link href={`/users/${user.id}/edit`} className="btn-secondary">
+
+          {/* Edit button — full width on mobile, auto on desktop */}
+          <Link
+            href={`/users/${user.id}/edit`}
+            className="btn-secondary self-start sm:self-auto w-full sm:w-auto justify-center sm:justify-start"
+          >
             <Edit className="w-4 h-4" />
             Modifica
           </Link>
@@ -112,7 +129,7 @@ export default async function UserDetailPage({ params }: { params: { id: string 
                     {tx.operator.name} · {formatDateTime(tx.createdAt)}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   <p className={`text-sm font-semibold ${tx.amount > 0 ? 'text-brand-600' : 'text-red-500'}`}>
                     {tx.amount > 0 ? '+' : ''}{tx.amount}
                   </p>
