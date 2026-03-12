@@ -176,16 +176,18 @@ export default async function DashboardPage() {
   const [stats, monthlyStats, newUsersStats] = await Promise.all([getStats(), getMonthlyStats(), getNewUsersPerMonth()])
 
   return (
-    <div className="animate-in space-y-8">
+    <div className="animate-in space-y-6 md:space-y-8">
+
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
+          <h1 className="text-3xl md:text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
             Dashboard
           </h1>
-          <p className="text-slate-500 mt-1">Panoramica del sistema di crediti</p>
+          <p className="text-slate-500 mt-1 text-sm">Panoramica del sistema di crediti</p>
         </div>
-        <div className="flex items-center gap-2">
+        {/* Action buttons — stack on mobile, row on sm+ */}
+        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 shrink-0">
           <BulkAssignCreditsButton usersWithCredits={stats.usersWithCredits} />
           <ResetAllCreditsButton />
         </div>
@@ -199,15 +201,14 @@ export default async function DashboardPage() {
             <p className="text-3xl font-bold text-slate-900 mt-1">{stats.totalUsers.toLocaleString('it')}</p>
             <p className="text-xs text-slate-400 mt-1">{stats.activeUsers} attivi</p>
           </div>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-blue-600 bg-blue-50">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-blue-600 bg-blue-50 shrink-0">
             <Users className="w-5 h-5" />
           </div>
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Card 1: bambini vs adulti */}
+      {/* Charts — fascia / genere */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
         <div className="card">
           <p className="text-sm font-medium text-slate-500">Utenti per fascia</p>
           <BarChart items={[
@@ -215,8 +216,6 @@ export default async function DashboardPage() {
             { label: 'Adulti', value: stats.adulti, color: 'bg-brand-500' },
           ]} />
         </div>
-
-        {/* Card 2: genere adulti */}
         <div className="card">
           <p className="text-sm font-medium text-slate-500">Genere adulti</p>
           <BarChart items={[
@@ -233,7 +232,7 @@ export default async function DashboardPage() {
 
       {/* Monthly stats */}
       {monthlyStats.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
           <CheckoutUsersChart monthlyStats={monthlyStats} />
 
           <div className="card">
@@ -280,7 +279,8 @@ export default async function DashboardPage() {
         ) : (
           <div className="space-y-1">
             {stats.recentTransactions.map(tx => (
-              <div key={tx.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-50 transition-colors">
+              <div key={tx.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-50 transition-colors">
+                {/* Icon */}
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                   tx.amount > 0 ? 'bg-brand-50 text-brand-600' : 'bg-red-50 text-red-500'
                 }`}>
@@ -289,17 +289,30 @@ export default async function DashboardPage() {
                     : <ArrowDownRight className="w-4 h-4" />
                   }
                 </div>
+
+                {/* Name + description */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900">
+                  <p className="text-sm font-medium text-slate-900 truncate">
                     {tx.user.firstName} {tx.user.lastName}
                   </p>
-                  <p className="text-xs text-slate-400">{tx.description || tx.type}</p>
+                  {/* Hide description on very small screens to avoid overflow */}
+                  <p className="text-xs text-slate-400 truncate hidden xs:block">
+                    {tx.description || tx.type}
+                  </p>
                 </div>
-                <div className="text-right">
+
+                {/* Amount + date */}
+                <div className="text-right shrink-0">
                   <p className={`text-sm font-semibold ${tx.amount > 0 ? 'text-brand-600' : 'text-red-500'}`}>
                     {tx.amount > 0 ? '+' : ''}{tx.amount} cr.
                   </p>
-                  <p className="text-xs text-slate-400">{formatDateTime(tx.createdAt)}</p>
+                  {/* Date: abbreviated on mobile */}
+                  <p className="text-xs text-slate-400">
+                    <span className="hidden sm:inline">{formatDateTime(tx.createdAt)}</span>
+                    <span className="sm:hidden">
+                      {new Date(tx.createdAt).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' })}
+                    </span>
+                  </p>
                 </div>
               </div>
             ))}
