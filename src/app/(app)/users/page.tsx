@@ -60,16 +60,17 @@ export default async function UsersPage({
   return (
     <div className="animate-in space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
+          <h1 className="text-3xl md:text-4xl text-slate-900" style={{ fontFamily: 'var(--font-display)' }}>
             Utenti
           </h1>
-          <p className="text-slate-500 mt-1">{totalCount} utenti trovati</p>
+          <p className="text-slate-500 mt-1 text-sm">{totalCount} utenti trovati</p>
         </div>
-        <Link href="/users/new" className="btn-primary">
+        <Link href="/users/new" className="btn-primary shrink-0">
           <UserPlus className="w-4 h-4" />
-          Nuovo utente
+          <span className="hidden sm:inline">Nuovo utente</span>
+          <span className="sm:hidden">Nuovo</span>
         </Link>
       </div>
 
@@ -80,47 +81,31 @@ export default async function UsersPage({
           type="search"
           name="q"
           defaultValue={q}
-          placeholder="Cerca per nome, cognome o numero tessera..."
+          placeholder="Cerca nome, cognome o tessera..."
           className="input pl-10"
         />
       </form>
 
-      {/* Table */}
-      <div className="card p-0 overflow-hidden">
+      {/* ── Desktop table (md+) ── */}
+      <div className="hidden md:block card p-0 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-surface-200 bg-surface-50">
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Utente
-              </th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Tessera
-              </th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Genere
-              </th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Età
-              </th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Tags
-              </th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Crediti
-              </th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Stato
-              </th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Registrato
-              </th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Utente</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tessera</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Genere</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Età</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tags</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Crediti</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stato</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Registrato</th>
               <th className="px-6 py-3.5" />
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-100">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-12 text-slate-400">
+                <td colSpan={9} className="text-center py-12 text-slate-400">
                   {q ? `Nessun risultato per "${q}"` : 'Nessun utente registrato'}
                 </td>
               </tr>
@@ -155,10 +140,7 @@ export default async function UsersPage({
                   </td>
                   <td className="px-6 py-4 text-slate-400 text-xs">{formatDate(user.createdAt)}</td>
                   <td className="px-6 py-4">
-                    <Link
-                      href={`/users/${user.id}`}
-                      className="btn-secondary text-xs py-1.5"
-                    >
+                    <Link href={`/users/${user.id}`} className="btn-secondary text-xs py-1.5">
                       Dettagli
                     </Link>
                   </td>
@@ -168,48 +150,85 @@ export default async function UsersPage({
           </tbody>
         </table>
 
-        {/* Pagination */}
+        {/* Pagination desktop */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-surface-100">
             <p className="text-sm text-slate-400">
               Pagina {page} di {totalPages} · {totalCount} utenti
+            </p>
+            <Pagination page={page} totalPages={totalPages} pageUrl={pageUrl} getPageNumbers={getPageNumbers} />
+          </div>
+        )}
+      </div>
+
+      {/* ── Mobile card list (< md) ── */}
+      <div className="md:hidden space-y-3">
+        {users.length === 0 ? (
+          <div className="card text-center py-12 text-slate-400 text-sm">
+            {q ? `Nessun risultato per "${q}"` : 'Nessun utente registrato'}
+          </div>
+        ) : (
+          users.map(user => (
+            <Link
+              key={user.id}
+              href={`/users/${user.id}`}
+              className="card flex items-center gap-4 p-4 hover:bg-surface-50 transition-colors active:scale-[0.99]"
+            >
+              {/* Avatar */}
+              <div className="w-11 h-11 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-semibold text-sm shrink-0">
+                {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+              </div>
+
+              {/* Main info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-medium text-slate-900 truncate">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  {user.isActive
+                    ? <span className="badge-green text-[10px] py-0.5">Attivo</span>
+                    : <span className="badge-slate text-[10px] py-0.5">Disabilitato</span>
+                  }
+                </div>
+                <p className="text-xs font-mono text-slate-400 mt-0.5">{user.cardNumber}</p>
+                {user.tags && (
+                  <p className="text-xs text-slate-400 truncate mt-0.5">{user.tags}</p>
+                )}
+              </div>
+
+              {/* Credits */}
+              <div className="text-right shrink-0">
+                <p className={`text-xl font-bold ${user.credits > 0 ? 'text-brand-600' : 'text-slate-300'}`}>
+                  {user.credits}
+                </p>
+                <p className="text-[10px] text-slate-400">crediti</p>
+              </div>
+            </Link>
+          ))
+        )}
+
+        {/* Pagination mobile */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-2">
+            <p className="text-xs text-slate-400">
+              {page}/{totalPages} · {totalCount} utenti
             </p>
             <div className="flex items-center gap-1">
               <Link
                 href={pageUrl(page - 1)}
                 aria-disabled={page === 1}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  page === 1
-                    ? 'text-slate-300 pointer-events-none'
-                    : 'text-slate-600 hover:bg-surface-100'
+                  page === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
                 }`}
               >
                 ←
               </Link>
-              {getPageNumbers().map((p, i) =>
-                p === '...' ? (
-                  <span key={`ellipsis-${i}`} className="px-2 text-slate-400 text-sm select-none">…</span>
-                ) : (
-                  <Link
-                    key={p}
-                    href={pageUrl(p)}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                      p === page
-                        ? 'bg-brand-600 text-white'
-                        : 'text-slate-600 hover:bg-surface-100'
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                )
-              )}
+              <span className="text-sm text-slate-600 font-medium px-2">{page}</span>
               <Link
                 href={pageUrl(page + 1)}
                 aria-disabled={page === totalPages}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  page === totalPages
-                    ? 'text-slate-300 pointer-events-none'
-                    : 'text-slate-600 hover:bg-surface-100'
+                  page === totalPages ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
                 }`}
               >
                 →
@@ -218,6 +237,57 @@ export default async function UsersPage({
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// ── Pagination helper (desktop) ──────────────────────────────────────────────
+function Pagination({
+  page,
+  totalPages,
+  pageUrl,
+  getPageNumbers,
+}: {
+  page: number
+  totalPages: number
+  pageUrl: (p: number) => string
+  getPageNumbers: () => (number | '...')[]
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      <Link
+        href={pageUrl(page - 1)}
+        aria-disabled={page === 1}
+        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+          page === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
+        }`}
+      >
+        ←
+      </Link>
+      {getPageNumbers().map((p, i) =>
+        p === '...' ? (
+          <span key={`ellipsis-${i}`} className="px-2 text-slate-400 text-sm select-none">…</span>
+        ) : (
+          <Link
+            key={p}
+            href={pageUrl(p)}
+            className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+              p === page ? 'bg-brand-600 text-white' : 'text-slate-600 hover:bg-surface-100'
+            }`}
+          >
+            {p}
+          </Link>
+        )
+      )}
+      <Link
+        href={pageUrl(page + 1)}
+        aria-disabled={page === totalPages}
+        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+          page === totalPages ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
+        }`}
+      >
+        →
+      </Link>
     </div>
   )
 }
