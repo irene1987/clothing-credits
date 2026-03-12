@@ -16,24 +16,40 @@ export function ResetAllCreditsButton() {
     router.refresh()
   }
 
-  if (confirm) {
-    return (
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-slate-600">Azzerare i crediti di tutti gli utenti?</span>
-        <button onClick={handleReset} disabled={loading} className="btn-danger text-sm">
-          {loading ? 'Azzeramento...' : 'Conferma'}
-        </button>
-        <button onClick={() => setConfirm(false)} className="btn-secondary text-sm">
-          Annulla
-        </button>
-      </div>
-    )
-  }
-
   return (
-    <button onClick={() => setConfirm(true)} className="btn-secondary">
-      <RotateCcw className="w-4 h-4" />
-      Azzera tutti i crediti
-    </button>
+    <div className="relative">
+      <button
+        onClick={() => setConfirm(v => !v)}
+        className="btn-secondary"
+        aria-expanded={confirm}
+      >
+        <RotateCcw className="w-4 h-4 shrink-0" />
+        <span className="hidden sm:inline">Azzera tutti i crediti</span>
+        <span className="sm:hidden">Azzera</span>
+      </button>
+
+      {confirm && (
+        <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-white border border-surface-200 rounded-2xl shadow-xl p-4 space-y-3">
+          <p className="text-sm text-slate-600 leading-snug">
+            Azzerare i crediti di <span className="font-semibold text-slate-900">tutti gli utenti</span>?
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={handleReset}
+              disabled={loading}
+              className="btn-danger text-sm flex-1 justify-center"
+            >
+              {loading ? 'Azzeramento...' : 'Conferma'}
+            </button>
+            <button
+              onClick={() => setConfirm(false)}
+              className="btn-secondary text-sm flex-1 justify-center"
+            >
+              Annulla
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
