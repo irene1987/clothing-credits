@@ -1,17 +1,26 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { UserPlus, Search } from 'lucide-react'
+import { UserPlus, Search, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 
 const PAGE_SIZE = 20
 
+type SortField = 'firstName' | 'lastName' | 'cardNumber' | 'gender' | 'age' | 'credits' | 'isActive' | 'createdAt'
+type SortDir = 'asc' | 'desc'
+
+const VALID_FIELDS: SortField[] = ['firstName', 'lastName', 'cardNumber', 'gender', 'age', 'credits', 'isActive', 'createdAt']
+
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: { q?: string; page?: string }
+  searchParams: { q?: string; page?: string; sort?: string; dir?: string }
 }) {
   const q = searchParams.q?.trim() || ''
   const page = Math.max(1, parseInt(searchParams.page || '1', 10))
+  const sortField: SortField = VALID_FIELDS.includes(searchParams.sort as SortField)
+    ? (searchParams.sort as SortField)
+    : 'cardNumber'
+  const sortDir: SortDir = searchParams.dir === 'asc' ? 'asc' : 'desc'
 
   const where = q
     ? {
@@ -26,7 +35,7 @@ export default async function UsersPage({
   const [users, totalCount] = await Promise.all([
     prisma.user.findMany({
       where,
-      orderBy: { cardNumber: 'desc' },
+      orderBy: { [sortField]: sortDir },
       take: PAGE_SIZE,
       skip: (page - 1) * PAGE_SIZE,
     }),
@@ -39,22 +48,54 @@ export default async function UsersPage({
     const params = new URLSearchParams()
     if (q) params.set('q', q)
     if (p > 1) params.set('page', String(p))
+    if (sortField !== 'cardNumber') params.set('sort', sortField)
+    if (sortDir !== 'desc') params.set('dir', sortDir)
     const qs = params.toString()
     return `/users${qs ? `?${qs}` : ''}`
   }
 
-  function getPageNumbers(): (number | '...')[] {
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1)
+  function sortUrl(field: SortField) {
+    const params = new URLSearchParams()
+    if (q) params.set('q', q)
+    params.set('sort', field)
+    if (field === sortField) {
+      params.set('dir', sortDir === 'asc' ? 'desc' : 'asc')
+    } else {
+      params.set('dir', field === 'createdAt' ? 'desc' : 'asc')
     }
+    return `/users?${params.toString()}`
+  }
+
+  function getPageNumbers(): (number | '...')[] {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
     const pages: (number | '...')[] = [1]
     if (page > 3) pages.push('...')
-    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) {
-      pages.push(i)
-    }
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pages.push(i)
     if (page < totalPages - 2) pages.push('...')
     pages.push(totalPages)
     return pages
+  }
+
+  function SortTh({ field, label, className }: { field: SortField; label: string; className?: string }) {
+    const isActive = sortField === field
+    return (
+      <th className={`px-6 py-3.5 ${className ?? 'text-left'}`}>
+        <Link
+          href={sortUrl(field)}
+          className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider select-none group text-slate-500 hover:text-slate-800 transition-colors"
+        >
+          {label}
+          <span className={`transition-colors ${isActive ? 'text-brand-600' : 'text-slate-300 group-hover:text-slate-400'}`}>
+            {isActive
+              ? sortDir === 'asc'
+                ? <ChevronUp className="w-3.5 h-3.5" />
+                : <ChevronDown className="w-3.5 h-3.5" />
+              : <ChevronsUpDown className="w-3.5 h-3.5" />
+            }
+          </span>
+        </Link>
+      </th>
+    )
   }
 
   return (
@@ -84,6 +125,9 @@ export default async function UsersPage({
           placeholder="Cerca nome, cognome o tessera..."
           className="input pl-10"
         />
+        {/* Preserve sort params across search submissions */}
+        {sortField !== 'cardNumber' && <input type="hidden" name="sort" value={sortField} />}
+        {sortDir !== 'desc' && <input type="hidden" name="dir" value={sortDir} />}
       </form>
 
       {/* ── Desktop table (md+) ── */}
@@ -91,14 +135,14 @@ export default async function UsersPage({
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-surface-200 bg-surface-50">
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Utente</th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tessera</th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Genere</th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Età</th>
+              <SortTh field="firstName" label="Utente" />
+              <SortTh field="cardNumber" label="Tessera" />
+              <SortTh field="gender" label="Genere" />
+              <SortTh field="age" label="Età" />
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tags</th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Crediti</th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stato</th>
-              <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Registrato</th>
+              <SortTh field="credits" label="Crediti" />
+              <SortTh field="isActive" label="Stato" />
+              <SortTh field="createdAt" label="Registrato" />
               <th className="px-6 py-3.5" />
             </tr>
           </thead>
@@ -150,7 +194,6 @@ export default async function UsersPage({
           </tbody>
         </table>
 
-        {/* Pagination desktop */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-surface-100">
             <p className="text-sm text-slate-400">
@@ -174,29 +217,20 @@ export default async function UsersPage({
               href={`/users/${user.id}`}
               className="card flex items-center gap-4 p-4 hover:bg-surface-50 transition-colors active:scale-[0.99]"
             >
-              {/* Avatar */}
               <div className="w-11 h-11 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-semibold text-sm shrink-0">
                 {user.firstName.charAt(0)}{user.lastName.charAt(0)}
               </div>
-
-              {/* Main info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <p className="font-medium text-slate-900 truncate">
-                    {user.firstName} {user.lastName}
-                  </p>
+                  <p className="font-medium text-slate-900 truncate">{user.firstName} {user.lastName}</p>
                   {user.isActive
                     ? <span className="badge-green text-[10px] py-0.5">Attivo</span>
                     : <span className="badge-slate text-[10px] py-0.5">Disabilitato</span>
                   }
                 </div>
                 <p className="text-xs font-mono text-slate-400 mt-0.5">{user.cardNumber}</p>
-                {user.tags && (
-                  <p className="text-xs text-slate-400 truncate mt-0.5">{user.tags}</p>
-                )}
+                {user.tags && <p className="text-xs text-slate-400 truncate mt-0.5">{user.tags}</p>}
               </div>
-
-              {/* Credits */}
               <div className="text-right shrink-0">
                 <p className={`text-xl font-bold ${user.credits > 0 ? 'text-brand-600' : 'text-slate-300'}`}>
                   {user.credits}
@@ -207,30 +241,17 @@ export default async function UsersPage({
           ))
         )}
 
-        {/* Pagination mobile */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between pt-2">
-            <p className="text-xs text-slate-400">
-              {page}/{totalPages} · {totalCount} utenti
-            </p>
+            <p className="text-xs text-slate-400">{page}/{totalPages} · {totalCount} utenti</p>
             <div className="flex items-center gap-1">
-              <Link
-                href={pageUrl(page - 1)}
-                aria-disabled={page === 1}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  page === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
-                }`}
-              >
+              <Link href={pageUrl(page - 1)} aria-disabled={page === 1}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${page === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'}`}>
                 ←
               </Link>
               <span className="text-sm text-slate-600 font-medium px-2">{page}</span>
-              <Link
-                href={pageUrl(page + 1)}
-                aria-disabled={page === totalPages}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  page === totalPages ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
-                }`}
-              >
+              <Link href={pageUrl(page + 1)} aria-disabled={page === totalPages}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${page === totalPages ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'}`}>
                 →
               </Link>
             </div>
@@ -241,13 +262,7 @@ export default async function UsersPage({
   )
 }
 
-// ── Pagination helper (desktop) ──────────────────────────────────────────────
-function Pagination({
-  page,
-  totalPages,
-  pageUrl,
-  getPageNumbers,
-}: {
+function Pagination({ page, totalPages, pageUrl, getPageNumbers }: {
   page: number
   totalPages: number
   pageUrl: (p: number) => string
@@ -255,37 +270,22 @@ function Pagination({
 }) {
   return (
     <div className="flex items-center gap-1">
-      <Link
-        href={pageUrl(page - 1)}
-        aria-disabled={page === 1}
-        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-          page === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
-        }`}
-      >
+      <Link href={pageUrl(page - 1)} aria-disabled={page === 1}
+        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${page === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'}`}>
         ←
       </Link>
       {getPageNumbers().map((p, i) =>
         p === '...' ? (
           <span key={`ellipsis-${i}`} className="px-2 text-slate-400 text-sm select-none">…</span>
         ) : (
-          <Link
-            key={p}
-            href={pageUrl(p)}
-            className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-              p === page ? 'bg-brand-600 text-white' : 'text-slate-600 hover:bg-surface-100'
-            }`}
-          >
+          <Link key={p} href={pageUrl(p)}
+            className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${p === page ? 'bg-brand-600 text-white' : 'text-slate-600 hover:bg-surface-100'}`}>
             {p}
           </Link>
         )
       )}
-      <Link
-        href={pageUrl(page + 1)}
-        aria-disabled={page === totalPages}
-        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-          page === totalPages ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'
-        }`}
-      >
+      <Link href={pageUrl(page + 1)} aria-disabled={page === totalPages}
+        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${page === totalPages ? 'text-slate-300 pointer-events-none' : 'text-slate-600 hover:bg-surface-100'}`}>
         →
       </Link>
     </div>
