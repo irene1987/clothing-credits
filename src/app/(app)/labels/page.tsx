@@ -47,7 +47,7 @@ export default async function LabelsPage() {
               </tr>
             ) : (
               labels.map(label => (
-                <ClickableRow key={label.id} href={`/labels/${label.id}/edit`} className="hover:bg-surface-50 transition-colors">
+                <ClickableRow key={label.id} href={`/labels/${label.id}/edit`} className="hover:bg-brand-50 transition-colors">
                   <td className="px-6 py-4 font-medium text-slate-900">{label.name}</td>
                   <td className="px-6 py-4 text-slate-600">{label.season}</td>
                   <td className="px-6 py-4">

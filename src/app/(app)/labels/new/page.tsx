@@ -61,13 +61,12 @@ export default function NewLabelPage() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">Stagione *</label>
-            <input
-              className="input"
-              required
-              placeholder="es. Inverno 2025"
-              value={form.season}
-              onChange={e => set('season', e.target.value)}
-            />
+            <select className="input" required value={form.season} onChange={e => set('season', e.target.value)}>
+              <option value="">—</option>
+              <option value="Inverno">Inverno</option>
+              <option value="Estate">Estate</option>
+              <option value="4Stagioni">4Stagioni</option>
+            </select>
           </div>
           <div>
             <label className="label">Crediti *</label>
@@ -85,13 +84,14 @@ export default function NewLabelPage() {
 
         <div>
           <label className="label">Categoria *</label>
-          <input
-            className="input"
-            required
-            placeholder="es. Abbigliamento"
-            value={form.category}
-            onChange={e => set('category', e.target.value)}
-          />
+          <select className="input" required value={form.category} onChange={e => set('category', e.target.value)}>
+            <option value="">—</option>
+            <option value="Child">Child</option>
+            <option value="Baby">Baby</option>
+            <option value="Uomo">Uomo</option>
+            <option value="Donna">Donna</option>
+            <option value="Unisex">Unisex</option>
+          </select>
         </div>
 
         {error && (

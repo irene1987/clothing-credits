@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 export function LabelActions({ id }: { id: string }) {
@@ -17,22 +17,14 @@ export function LabelActions({ id }: { id: string }) {
 
   return (
     <>
-      <div className="flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); router.push(`/labels/${id}/edit`) }}
-          className="text-slate-300 hover:text-brand-500 transition-colors"
-          title="Modifica"
-        >
-          <Pencil className="w-4 h-4" />
-        </button>
+      <div className="flex items-center justify-end">
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); setShowConfirm(true) }}
-          className="text-slate-300 hover:text-red-500 transition-colors"
+          className="text-red-300 hover:text-red-500 transition-colors"
           title="Elimina"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-5 h-5" />
         </button>
       </div>
 

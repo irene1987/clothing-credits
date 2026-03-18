@@ -66,7 +66,12 @@ export default function EditLabelPage({ params }: { params: { id: string } }) {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">Stagione *</label>
-            <input className="input" required value={form.season} onChange={e => set('season', e.target.value)} />
+            <select className="input" required value={form.season} onChange={e => set('season', e.target.value)}>
+              <option value="">—</option>
+              <option value="Inverno">Inverno</option>
+              <option value="Estate">Estate</option>
+              <option value="4Stagioni">4Stagioni</option>
+            </select>
           </div>
           <div>
             <label className="label">Crediti *</label>
@@ -76,7 +81,14 @@ export default function EditLabelPage({ params }: { params: { id: string } }) {
 
         <div>
           <label className="label">Categoria *</label>
-          <input className="input" required value={form.category} onChange={e => set('category', e.target.value)} />
+          <select className="input" required value={form.category} onChange={e => set('category', e.target.value)}>
+            <option value="">—</option>
+            <option value="Child">Child</option>
+            <option value="Baby">Baby</option>
+            <option value="Uomo">Uomo</option>
+            <option value="Donna">Donna</option>
+            <option value="Unisex">Unisex</option>
+          </select>
         </div>
 
         {error && <div className="text-sm text-red-600 bg-red-50 rounded-xl p-3">{error}</div>}
