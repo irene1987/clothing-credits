@@ -28,6 +28,7 @@ function SearchCombobox<T>({
   placeholder,
   onSearch,
   onSelect,
+  onQueryChange,
   renderOption,
   renderSelected,
   selected,
@@ -35,6 +36,7 @@ function SearchCombobox<T>({
   placeholder: string
   onSearch: (q: string) => Promise<T[]>
   onSelect: (item: T) => void
+  onQueryChange?: () => void
   renderOption: (item: T) => React.ReactNode
   renderSelected: (item: T) => string
   selected: T | null
@@ -80,7 +82,7 @@ function SearchCombobox<T>({
         className="input w-full"
         placeholder={placeholder}
         value={query}
-        onChange={e => setQuery(e.target.value)}
+        onChange={e => { setQuery(e.target.value); onQueryChange?.() }}
         onFocus={() => results.length > 0 && setOpen(true)}
       />
       {open && results.length > 0 && (
@@ -206,7 +208,8 @@ export default function CheckoutPage() {
         <SearchCombobox<User>
           placeholder="Cerca tessera, nome o cognome..."
           onSearch={searchUsers}
-          onSelect={setUser}
+          onSelect={(u) => { setUser(u); if (!u) setMessage(null) }}
+          onQueryChange={() => setMessage(null)}
           selected={user}
           renderOption={u => (
             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
