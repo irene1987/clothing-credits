@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Download, FileText } from 'lucide-react'
+import { FileText } from 'lucide-react'
 
 interface StatsData {
   generatedAt: string
@@ -30,54 +30,6 @@ async function fetchStats(): Promise<StatsData> {
   return res.json()
 }
 
-function exportCSV(data: StatsData) {
-  const rows: string[][] = []
-
-  rows.push([`Statistiche DarBazar — ${data.year}`])
-  rows.push([`Generato il: ${new Date(data.generatedAt).toLocaleString('it-IT')}`])
-  rows.push([])
-
-  rows.push(['STATISTICHE GENERALI'])
-  rows.push(['Utenti totali', String(data.generalStats.totalUsers)])
-  rows.push(['Utenti attivi', String(data.generalStats.activeUsers)])
-  rows.push(['Utenti con crediti', String(data.generalStats.usersWithCredits)])
-  rows.push(['Bambini', String(data.generalStats.bambini)])
-  rows.push(['Adulti', String(data.generalStats.adulti)])
-  rows.push(['Adulti F', String(data.generalStats.adultiF)])
-  rows.push(['Adulti M', String(data.generalStats.adultiM)])
-  rows.push(['Adulti NB', String(data.generalStats.adultiNB)])
-  rows.push(['Adulti (genere non specificato)', String(data.generalStats.adultiNullGender)])
-  rows.push([])
-
-  rows.push(['NUOVI UTENTI PER MESE', String(data.year)])
-  rows.push(['Mese', 'Nuovi utenti'])
-  for (const m of data.newUsersPerMonth) {
-    rows.push([m.label, String(m.count)])
-  }
-  rows.push([])
-
-  rows.push(['STATISTICHE MENSILI CHECKOUT'])
-  rows.push(['Mese', 'Utenti unici', 'Prodotto più richiesto', 'Stagione', 'Categoria', 'Quantità'])
-  for (const m of data.monthlyStats) {
-    rows.push([
-      m.label,
-      String(m.uniqueUsers),
-      m.topProduct?.name ?? '—',
-      m.topProduct?.season ?? '—',
-      m.topProduct?.category ?? '—',
-      m.topProduct ? String(m.topProduct.count) : '—',
-    ])
-  }
-
-  const csv = rows.map(r => r.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n')
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `statistiche-${data.year}.csv`
-  a.click()
-  URL.revokeObjectURL(url)
-}
 
 async function exportPDF(data: StatsData) {
   const { default: jsPDF } = await import('jspdf')
@@ -181,39 +133,27 @@ async function exportPDF(data: StatsData) {
 }
 
 export function ExportStatsButton() {
-  const [loading, setLoading] = useState<'csv' | 'pdf' | null>(null)
+  const [loading, setLoading] = useState(false)
 
-  const handle = async (type: 'csv' | 'pdf') => {
-    setLoading(type)
+  const handle = async () => {
+    setLoading(true)
     try {
       const data = await fetchStats()
-      if (type === 'csv') exportCSV(data)
-      else await exportPDF(data)
+      await exportPDF(data)
     } finally {
-      setLoading(null)
+      setLoading(false)
     }
   }
 
   return (
-    <div className="flex gap-2">
-      <button
-        onClick={() => handle('csv')}
-        disabled={!!loading}
-        className="btn-secondary text-sm flex items-center gap-1.5"
-        title="Esporta CSV"
-      >
-        <Download className="w-4 h-4" />
-        {loading === 'csv' ? 'Export...' : 'CSV'}
-      </button>
-      <button
-        onClick={() => handle('pdf')}
-        disabled={!!loading}
-        className="btn-secondary text-sm flex items-center gap-1.5"
-        title="Esporta PDF"
-      >
-        <FileText className="w-4 h-4" />
-        {loading === 'pdf' ? 'Export...' : 'PDF'}
-      </button>
-    </div>
+    <button
+      onClick={handle}
+      disabled={loading}
+      className="btn-secondary text-sm flex items-center gap-1.5"
+      title="Esporta PDF"
+    >
+      <FileText className="w-4 h-4" />
+      {loading ? 'Export...' : 'PDF'}
+    </button>
   )
 }

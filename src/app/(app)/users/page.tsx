@@ -4,6 +4,7 @@ import { UserPlus, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { UserSearchInput } from './UserSearchInput'
 import { ClickableRow } from '@/components/ClickableRow'
+import { ExportUsersButton } from '@/components/ExportUsersButton'
 
 const PAGE_SIZE = 20
 
@@ -110,11 +111,14 @@ export default async function UsersPage({
           </h1>
           <p className="text-slate-500 mt-1 text-sm">{totalCount} utenti trovati</p>
         </div>
-        <Link href="/users/new" className="btn-primary shrink-0">
-          <UserPlus className="w-4 h-4" />
-          <span className="hidden sm:inline">Nuovo utente</span>
-          <span className="sm:hidden">Nuovo</span>
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <ExportUsersButton />
+          <Link href="/users/new" className="btn-primary">
+            <UserPlus className="w-4 h-4" />
+            <span className="hidden sm:inline">Nuovo utente</span>
+            <span className="sm:hidden">Nuovo</span>
+          </Link>
+        </div>
       </div>
 
       {/* Search */}
