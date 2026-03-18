@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { UserPlus, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { UserSearchInput } from './UserSearchInput'
+import { ClickableRow } from '@/components/ClickableRow'
 
 const PAGE_SIZE = 20
 
@@ -144,7 +145,7 @@ export default async function UsersPage({
               </tr>
             ) : (
               users.map(user => (
-                <tr key={user.id} className="hover:bg-surface-50 transition-colors">
+                <ClickableRow key={user.id} href={`/users/${user.id}`} className="hover:bg-surface-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-semibold text-sm shrink-0">
@@ -172,12 +173,7 @@ export default async function UsersPage({
                     }
                   </td>
                   <td className="px-6 py-4 text-slate-400 text-xs">{formatDate(user.createdAt)}</td>
-                  <td className="px-6 py-4">
-                    <Link href={`/users/${user.id}`} className="btn-secondary text-xs py-1.5">
-                      Dettagli
-                    </Link>
-                  </td>
-                </tr>
+                </ClickableRow>
               ))
             )}
           </tbody>

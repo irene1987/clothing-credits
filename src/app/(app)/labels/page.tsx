@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { LabelActions } from './LabelActions'
+import { ClickableRow } from '@/components/ClickableRow'
 
 export default async function LabelsPage() {
   const labels = await prisma.label.findMany({
@@ -46,7 +47,7 @@ export default async function LabelsPage() {
               </tr>
             ) : (
               labels.map(label => (
-                <tr key={label.id} className="hover:bg-surface-50 transition-colors">
+                <ClickableRow key={label.id} href={`/labels/${label.id}/edit`} className="hover:bg-surface-50 transition-colors">
                   <td className="px-6 py-4 font-medium text-slate-900">{label.name}</td>
                   <td className="px-6 py-4 text-slate-600">{label.season}</td>
                   <td className="px-6 py-4">
@@ -56,7 +57,7 @@ export default async function LabelsPage() {
                   <td className="px-6 py-4">
                     <LabelActions id={label.id} />
                   </td>
-                </tr>
+                </ClickableRow>
               ))
             )}
           </tbody>
@@ -71,7 +72,7 @@ export default async function LabelsPage() {
           </div>
         ) : (
           labels.map(label => (
-            <div key={label.id} className="card flex items-center gap-4 p-4">
+            <Link key={label.id} href={`/labels/${label.id}/edit`} className="card flex items-center gap-4 p-4 hover:bg-surface-50 transition-colors active:scale-[0.99]">
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-slate-900">{label.name}</p>
                 <p className="text-xs text-slate-400 mt-0.5">{label.season} · {label.category}</p>
@@ -83,7 +84,7 @@ export default async function LabelsPage() {
                 </div>
                 <LabelActions id={label.id} />
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>

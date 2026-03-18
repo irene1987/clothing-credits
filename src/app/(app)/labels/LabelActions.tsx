@@ -5,7 +5,8 @@ import { Pencil, Trash2 } from 'lucide-react'
 export function LabelActions({ id }: { id: string }) {
   const router = useRouter()
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation()
     if (!confirm('Eliminare questa tipologia?')) return
     await fetch(`/api/labels/${id}`, { method: 'DELETE' })
     router.refresh()
@@ -15,7 +16,7 @@ export function LabelActions({ id }: { id: string }) {
     <div className="flex items-center justify-end gap-2">
       <button
         type="button"
-        onClick={() => router.push(`/labels/${id}/edit`)}
+        onClick={(e) => { e.stopPropagation(); router.push(`/labels/${id}/edit`) }}
         className="text-slate-300 hover:text-brand-500 transition-colors"
         title="Modifica"
       >
