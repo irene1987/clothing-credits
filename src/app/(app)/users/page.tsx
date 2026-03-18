@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { UserPlus, Search, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { UserPlus, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
+import { UserSearchInput } from './UserSearchInput'
 
 const PAGE_SIZE = 20
 
@@ -116,19 +117,7 @@ export default async function UsersPage({
       </div>
 
       {/* Search */}
-      <form method="get" className="relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-        <input
-          type="search"
-          name="q"
-          defaultValue={q}
-          placeholder="Cerca nome, cognome o tessera..."
-          className="input pl-10"
-        />
-        {/* Preserve sort params across search submissions */}
-        {sortField !== 'cardNumber' && <input type="hidden" name="sort" value={sortField} />}
-        {sortDir !== 'desc' && <input type="hidden" name="dir" value={sortDir} />}
-      </form>
+      <UserSearchInput defaultValue={q} />
 
       {/* ── Desktop table (md+) ── */}
       <div className="hidden md:block card p-0 overflow-hidden">
