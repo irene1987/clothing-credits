@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Trash2 } from 'lucide-react'
 
 export default function EditLabelPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -10,6 +10,8 @@ export default function EditLabelPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [error, setError] = useState('')
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     fetch(`/api/labels/${params.id}`)
@@ -26,6 +28,12 @@ export default function EditLabelPage({ params }: { params: { id: string } }) {
   }, [params.id])
 
   const set = (key: string, val: string) => setForm(f => ({ ...f, [key]: val }))
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    await fetch(`/api/labels/${params.id}`, { method: 'DELETE' })
+    router.push('/labels')
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -93,13 +101,62 @@ export default function EditLabelPage({ params }: { params: { id: string } }) {
 
         {error && <div className="text-sm text-red-600 bg-red-50 rounded-xl p-3">{error}</div>}
 
-        <div className="flex gap-3 pt-2">
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Salvataggio...' : 'Salva modifiche'}
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex gap-3">
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? 'Salvataggio...' : 'Salva modifiche'}
+            </button>
+            <Link href="/labels" className="btn-secondary">Annulla</Link>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowConfirm(true)}
+            className="btn-secondary text-red-500 hover:text-red-700 hover:bg-red-50 border-red-200"
+          >
+            <Trash2 className="w-4 h-4" />
+            Elimina
           </button>
-          <Link href="/labels" className="btn-secondary">Annulla</Link>
         </div>
       </form>
+
+      {showConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          onClick={() => setShowConfirm(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900">Elimina etichetta</p>
+                <p className="text-sm text-slate-500 mt-0.5">Questa azione non può essere annullata.</p>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="btn-primary bg-red-600 hover:bg-red-700 flex-1 justify-center"
+              >
+                {deleting ? 'Eliminazione...' : 'Elimina'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowConfirm(false)}
+                className="btn-secondary flex-1 justify-center"
+              >
+                Annulla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

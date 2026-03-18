@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { Plus, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
-import { LabelActions } from './LabelActions'
 import { ClickableRow } from '@/components/ClickableRow'
 import { LabelSearchInput } from './LabelSearchInput'
 
@@ -98,7 +97,6 @@ export default async function LabelsPage({
               <SortTh field="season" label="Stagione" />
               <SortTh field="credits" label="Crediti" />
               <SortTh field="category" label="Categoria" />
-              <th className="px-6 py-3.5" />
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-100">
@@ -117,9 +115,6 @@ export default async function LabelsPage({
                     <span className="font-bold text-brand-600">{label.credits}</span>
                   </td>
                   <td className="px-6 py-4 text-slate-600">{label.category}</td>
-                  <td className="px-6 py-4">
-                    <LabelActions id={label.id} />
-                  </td>
                 </ClickableRow>
               ))
             )}
@@ -140,12 +135,9 @@ export default async function LabelsPage({
                 <p className="font-medium text-slate-900">{label.name}</p>
                 <p className="text-xs text-slate-400 mt-0.5">{label.season} · {label.category}</p>
               </div>
-              <div className="text-right shrink-0 flex items-center gap-4">
-                <div>
-                  <p className="text-xl font-bold text-brand-600">{label.credits}</p>
-                  <p className="text-[10px] text-slate-400">crediti</p>
-                </div>
-                <LabelActions id={label.id} />
+              <div className="text-right shrink-0">
+                <p className="text-xl font-bold text-brand-600">{label.credits}</p>
+                <p className="text-[10px] text-slate-400">crediti</p>
               </div>
             </Link>
           ))
