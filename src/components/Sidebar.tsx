@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import {
   LayoutDashboard, Users, ArrowLeftRight, LogOut,
-  Settings, ShoppingBag, Menu, X, ChevronLeft, ChevronRight
+  Settings, ShoppingBag, Menu, X, ChevronLeft, ChevronRight, Tags
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState, useEffect } from 'react'
@@ -15,6 +15,7 @@ const nav = [
   { href: '/checkout', label: 'Checkout', icon: ShoppingBag },
   { href: '/users', label: 'Utenti', icon: Users },
   { href: '/transactions', label: 'Transazioni', icon: ArrowLeftRight },
+  { href: '/labels', label: 'Etichette', icon: Tags },
 ]
 
 const adminNav = [
