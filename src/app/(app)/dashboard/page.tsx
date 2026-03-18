@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ResetAllCreditsButton } from '@/components/ResetAllCreditsButton'
 import { BulkAssignCreditsButton } from '@/components/BulkAssignCreditsButton'
 import { NewUsersChart, CheckoutUsersChart } from '@/components/DashboardMonthlySection'
+import { ExportStatsButton } from '@/components/ExportStatsButton'
 
 async function getNewUsersPerMonth() {
   const now = new Date()
@@ -188,6 +189,7 @@ export default async function DashboardPage() {
         </div>
         {/* Action buttons — stack on mobile, row on sm+ */}
         <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 shrink-0">
+          <ExportStatsButton />
           <BulkAssignCreditsButton usersWithCredits={stats.usersWithCredits} />
           <ResetAllCreditsButton />
         </div>
