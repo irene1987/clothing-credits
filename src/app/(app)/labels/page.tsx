@@ -21,7 +21,7 @@ export default async function LabelsPage() {
         </div>
         <Link href="/labels/new" className="btn-primary shrink-0">
           <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Nuova tipologia</span>
+          <span className="hidden sm:inline">Nuova etichetta</span>
           <span className="sm:hidden">Nuova</span>
         </Link>
       </div>
