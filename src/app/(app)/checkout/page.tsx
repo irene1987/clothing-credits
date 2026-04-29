@@ -108,7 +108,7 @@ export default function CheckoutPage() {
   const [user, setUser] = useState<User | null>(null)
   const [allLabels, setAllLabels] = useState<Label[]>([])
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null)
-  const [quantity, setQuantity] = useState(1)
+  const [quantityStr, setQuantityStr] = useState('1')
   const [cart, setCart] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
@@ -147,6 +147,7 @@ export default function CheckoutPage() {
 
   const addToCart = () => {
     if (!selectedLabel) return
+    const quantity = Math.max(1, parseInt(quantityStr) || 1)
     setCart(prev => {
       const existing = prev.findIndex(i => i.label.id === selectedLabel.id)
       if (existing >= 0) {
@@ -157,7 +158,7 @@ export default function CheckoutPage() {
       return [...prev, { label: selectedLabel, quantity }]
     })
     setSelectedLabel(null)
-    setQuantity(1)
+    setQuantityStr('1')
   }
 
   const removeFromCart = (index: number) => {
@@ -263,8 +264,8 @@ export default function CheckoutPage() {
                 type="number"
                 className="input text-center"
                 min={1}
-                value={quantity}
-                onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                value={quantityStr}
+                onChange={e => setQuantityStr(e.target.value)}
               />
             </div>
             <button
