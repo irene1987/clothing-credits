@@ -6,11 +6,13 @@ import * as path from 'path'
 const prisma = new PrismaClient()
 
 async function main() {
-  // Svuota la tabella prima di importare
+  // Svuota le tabelle prima di importare
+  await prisma.transaction.deleteMany()
+  console.log('🗑️  Tabella transactions svuotata')
   await prisma.user.deleteMany()
   console.log('🗑️  Tabella users svuotata')
 
-  const csvPath = path.join(__dirname, 'Beneficiaries_Rome_2026-02-25_075855.csv')
+  const csvPath = path.join(__dirname, 'Beneficiaries_2026-04-29.csv')
   const content = fs.readFileSync(csvPath, 'utf-8')
 
   const records = parse(content, {
