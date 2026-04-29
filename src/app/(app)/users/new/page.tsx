@@ -30,7 +30,25 @@ export default function NewUserPage() {
       .catch(() => {})
   }, [])
 
+  const currentYear = new Date().getFullYear()
+
   const set = (key: string, val: string | number) => setForm(f => ({ ...f, [key]: val }))
+
+  const handleBirthYear = (val: string) => {
+    setForm(f => {
+      const year = parseInt(val)
+      const age = year >= 1900 && year <= currentYear ? String(currentYear - year) : f.age
+      return { ...f, birthYear: val, age }
+    })
+  }
+
+  const handleAge = (val: string) => {
+    setForm(f => {
+      const age = parseInt(val)
+      const birthYear = age >= 0 && age <= 120 ? String(currentYear - age) : f.birthYear
+      return { ...f, age: val, birthYear }
+    })
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,7 +110,7 @@ export default function NewUserPage() {
         <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="label">Anno di nascita *</label>
-            <input className="input" type="number" min={1900} max={new Date().getFullYear()} required value={form.birthYear} onChange={e => set('birthYear', e.target.value)} />
+            <input className="input" type="number" min={1900} max={currentYear} required value={form.birthYear} onChange={e => handleBirthYear(e.target.value)} />
           </div>
           <div>
             <label className="label">Genere *</label>
@@ -105,7 +123,7 @@ export default function NewUserPage() {
           </div>
           <div>
             <label className="label">Età *</label>
-            <input className="input" type="number" min={0} max={120} required value={form.age} onChange={e => set('age', e.target.value)} />
+            <input className="input" type="number" min={0} max={120} required value={form.age} onChange={e => handleAge(e.target.value)} />
           </div>
         </div>
 
