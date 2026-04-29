@@ -15,7 +15,7 @@ export default function NewUserPage() {
     age: '',
     tags: '',
     email: '',
-    credits: 0,
+    credits: '',
     notes: '',
   })
   const [loading, setLoading] = useState(false)
@@ -40,7 +40,7 @@ export default function NewUserPage() {
     const res = await fetch('/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, credits: parseInt(form.credits as string) || 0 }),
     })
 
     if (res.ok) {
@@ -126,7 +126,7 @@ export default function NewUserPage() {
               min={0}
               required
               value={form.credits}
-              onChange={e => set('credits', parseInt(e.target.value) || 0)}
+              onChange={e => set('credits', e.target.value)}
             />
           </div>
         </div>

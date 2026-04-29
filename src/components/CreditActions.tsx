@@ -10,10 +10,12 @@ interface Props {
 
 export function CreditActions({ userId, currentCredits }: Props) {
   const router = useRouter()
-  const [amount, setAmount] = useState(1)
+  const [amountStr, setAmountStr] = useState('1')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
+
+  const amount = Math.max(1, parseInt(amountStr) || 1)
 
   const submit = async (type: 'ADD' | 'SUBTRACT' | 'RESET') => {
     setLoading(true)
@@ -45,19 +47,19 @@ export function CreditActions({ userId, currentCredits }: Props) {
         <div className="flex items-center gap-2">
           <button
             className="btn-secondary px-3"
-            onClick={() => setAmount(Math.max(1, amount - 1))}
+            onClick={() => setAmountStr(String(Math.max(1, amount - 1)))}
             type="button"
           >−</button>
           <input
             type="number"
             className="input text-center text-xl font-bold"
-            value={amount}
+            value={amountStr}
             min={1}
-            onChange={e => setAmount(Math.max(1, parseInt(e.target.value) || 1))}
+            onChange={e => setAmountStr(e.target.value)}
           />
           <button
             className="btn-secondary px-3"
-            onClick={() => setAmount(amount + 1)}
+            onClick={() => setAmountStr(String(amount + 1))}
             type="button"
           >+</button>
         </div>
