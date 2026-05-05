@@ -22,12 +22,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Campi obbligatori mancanti' }, { status: 400 })
   }
 
-  // Check duplicate card
-  const existing = await prisma.user.findFirst({ where: { cardNumber } })
-  if (existing) {
-    return NextResponse.json({ error: 'Numero tessera già esistente' }, { status: 409 })
-  }
-
   const user = await prisma.user.create({
     data: { firstName, lastName, cardNumber, birthYear: birthYear ? parseInt(birthYear) : null, gender: gender || null, age: birthYear ? new Date().getFullYear() - parseInt(birthYear) : (age ? parseInt(age) : null), tags: tags || null, email, notes, credits: credits || 0 },
   })
