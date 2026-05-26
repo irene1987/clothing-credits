@@ -9,6 +9,7 @@ interface UserResult {
   firstName: string
   lastName: string
   credits: number
+  isActive: boolean
 }
 
 export function UserSearchInput({
@@ -31,7 +32,7 @@ export function UserSearchInput({
       return
     }
     timer.current = setTimeout(async () => {
-      const res = await fetch(`/api/users/search?q=${encodeURIComponent(value.trim())}`)
+      const res = await fetch(`/api/users/search?q=${encodeURIComponent(value.trim())}&includeInactive=true`)
       const data: UserResult[] = await res.json()
       setResults(data)
       setOpen(data.length > 0)
@@ -78,7 +79,8 @@ export function UserSearchInput({
             >
               <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                 <span className="font-mono text-brand-600 text-xs">{user.cardNumber}</span>
-                <span className="font-medium text-slate-800">{user.firstName} {user.lastName}</span>
+                <span className={`font-medium ${user.isActive ? 'text-slate-800' : 'text-slate-400'}`}>{user.firstName} {user.lastName}</span>
+                {!user.isActive && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-700">Disabilitato</span>}
                 <span className="text-slate-400 text-xs ml-auto">{user.credits} crediti</span>
               </div>
             </button>

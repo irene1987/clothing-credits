@@ -10,16 +10,18 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get('q')?.trim() || ''
   if (!q) return NextResponse.json([])
 
+  const includeInactive = req.nextUrl.searchParams.get('includeInactive') === 'true'
+
   const users = await prisma.user.findMany({
     where: {
-      isActive: true,
+      ...(includeInactive ? {} : { isActive: true }),
       OR: [
         { cardNumber: { contains: q, mode: 'insensitive' } },
         { firstName: { contains: q, mode: 'insensitive' } },
         { lastName: { contains: q, mode: 'insensitive' } },
       ],
     },
-    select: { id: true, cardNumber: true, firstName: true, lastName: true, credits: true },
+    select: { id: true, cardNumber: true, firstName: true, lastName: true, credits: true, isActive: true },
     take: 10,
     orderBy: { cardNumber: 'asc' },
   })

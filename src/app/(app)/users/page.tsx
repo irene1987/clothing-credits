@@ -173,7 +173,7 @@ export default async function UsersPage({
                   <td className="px-6 py-4">
                     {user.isActive
                       ? <span className="badge-green">Attivo</span>
-                      : <span className="badge-slate">Disabilitato</span>
+                      : <span className="badge-red">Disabilitato</span>
                     }
                   </td>
                   <td className="px-6 py-4 text-slate-400 text-xs">{formatDate(user.createdAt)}</td>
@@ -214,7 +214,7 @@ export default async function UsersPage({
                   <p className="font-medium text-slate-900 truncate">{user.firstName} {user.lastName}</p>
                   {user.isActive
                     ? <span className="badge-green text-[10px] py-0.5">Attivo</span>
-                    : <span className="badge-slate text-[10px] py-0.5">Disabilitato</span>
+                    : <span className="badge-red text-[10px] py-0.5">Disabilitato</span>
                   }
                 </div>
                 <p className="text-xs font-mono text-slate-400 mt-0.5">{user.cardNumber}</p>
