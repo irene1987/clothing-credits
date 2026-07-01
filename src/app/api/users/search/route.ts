@@ -12,14 +12,18 @@ export async function GET(req: NextRequest) {
 
   const includeInactive = req.nextUrl.searchParams.get('includeInactive') === 'true'
 
+  const terms = q.split(/\s+/).filter(Boolean)
+
   const users = await prisma.user.findMany({
     where: {
       ...(includeInactive ? {} : { isActive: true }),
-      OR: [
-        { cardNumber: { contains: q, mode: 'insensitive' } },
-        { firstName: { contains: q, mode: 'insensitive' } },
-        { lastName: { contains: q, mode: 'insensitive' } },
-      ],
+      AND: terms.map(term => ({
+        OR: [
+          { cardNumber: { contains: term, mode: 'insensitive' } },
+          { firstName: { contains: term, mode: 'insensitive' } },
+          { lastName: { contains: term, mode: 'insensitive' } },
+        ],
+      })),
     },
     select: { id: true, cardNumber: true, firstName: true, lastName: true, credits: true, isActive: true },
     orderBy: { cardNumber: 'asc' },
