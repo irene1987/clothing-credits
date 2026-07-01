@@ -22,7 +22,6 @@ export async function GET(req: NextRequest) {
       ],
     },
     select: { id: true, cardNumber: true, firstName: true, lastName: true, credits: true, isActive: true },
-    take: 10,
     orderBy: { cardNumber: 'asc' },
   })
 
